@@ -1,8 +1,10 @@
 include requirements.txt
 include config.yaml
 include logger.conf
+
+include data/CryptoScreener.csv
+include data/example.png
+
 include run.sh
 include prepare.sh
 include deploy.sh
-include data/CryptoScreener.xlsx
-include data/example.png

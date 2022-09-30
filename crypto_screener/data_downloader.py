@@ -2,6 +2,7 @@ import logging
 import time
 
 import ccxt
+import yfinance as yf
 import pandas as pd
 from ccxt import RateLimitExceeded
 
@@ -12,6 +13,7 @@ class DataDownloader:
         self.phemex_client = ccxt.phemex()
         self.kucoin_client = ccxt.kucoin()
         self.binance_client = ccxt.binance()
+        self.okx_client = ccxt.okx()
         self.rate_exceed_delay_seconds = rate_exceed_delay_seconds
 
     def download_daily_ohlc(self, exchange, ticker):
@@ -25,6 +27,12 @@ class DataDownloader:
 
         if exchange == "BinanceSpot":
             return self.__download_daily_ohlc_from_ccxt(self.binance_client, ticker)
+
+        if exchange == "OkxSpot":
+            return self.__download_daily_ohlc_from_ccxt(self.okx_client, ticker.replace("USDT", "-USDT"))
+
+        if exchange == "SimpleFx":
+            return self.__download_daily_ohlc_from_yfinance(ticker)
 
         raise Exception("Not supported exchange - {}".format(exchange))
 
@@ -50,3 +58,8 @@ class DataDownloader:
                     "RateLimitExceeded: Too Many Requests on exchange api, app will be sleep {} seconds before recall api."
                     .format(self.rate_exceed_delay_seconds))
                 time.sleep(self.rate_exceed_delay_seconds)
+
+    def __download_daily_ohlc_from_yfinance(self, ticker):
+        ohlc_daily_raw = yf.Ticker(ticker).history("200d","1d")
+        ohlc_daily_raw.rename(columns={"Open":"open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"}, inplace=True)
+        return ohlc_daily_raw[["open","high","low","close","volume"]]

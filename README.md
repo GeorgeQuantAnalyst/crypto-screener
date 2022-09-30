@@ -1,7 +1,12 @@
 # Crypto screener
-Application for calculating the ratings based on the indicators (SMA 20, SMA 50, SMA 200), oscillators (RSI) and volatility (ATRW%) for Phemex futures and Kucoin spot cryptocurrencies.
+Application for calculating the ratings based on the indicators (SMA 20, SMA 50, SMA 200), oscillators (RSI) and volatility (ATRW%) for cryptocurrencies exchanges.
 
-![Example](data/example.png)
+* Supported exchanges:
+    * Phemex futures
+    * Okx spot
+    * SimpleFx cfd
+
+![Example](images/example.png)
 
 ## How to build
 ```bash
@@ -28,3 +33,4 @@ Application for calculating the ratings based on the indicators (SMA 20, SMA 50,
 * Pandas
 * Pandas-ta
 * CCXT
+* YFinance
