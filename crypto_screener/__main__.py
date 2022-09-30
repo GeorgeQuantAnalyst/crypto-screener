@@ -19,8 +19,7 @@ from crypto_screener.utils import load_config
 
 CONFIG_FILE_PATH = "config.yaml"
 LOGGER_CONFIG_FILE_PATH = "logger.conf"
-INPUT_EXCEL_PATH = "data/CryptoScreener.xlsx"
-OUTPUT_CSV_PATH = "data/CryptoScreenerWithValues.csv"
+CSV_FILE_PATH = "data/CryptoScreener.csv"
 
 logging.config.fileConfig(fname=LOGGER_CONFIG_FILE_PATH, disable_existing_loggers=False)
 logging.info(__logo__)
@@ -30,6 +29,6 @@ if __name__ == "__main__":
     data_downloader = DataDownloader(config["RateExceedDelaySeconds"])
     crypto_screener_service = CryptoScreenerService(data_downloader)
 
-    assets = pd.read_excel(INPUT_EXCEL_PATH, sheet_name="CryptoScreener")
+    assets = pd.read_csv(CSV_FILE_PATH)
     assets_with_values = crypto_screener_service.download_and_calculate_values(assets)
-    assets_with_values.to_csv(OUTPUT_CSV_PATH, index=False)
+    assets_with_values.to_csv(CSV_FILE_PATH, index=False)

@@ -20,7 +20,7 @@ class CryptoScreenerService:
         for index, asset in assets.iterrows():
             logging.info("Process asset - {} ({}/{})".format(asset["Asset"], index + 1, count_assets))
             try:
-                exchange = "Phemex" if asset["PhemexFutures"] else "Kucoin"
+                exchange = asset["Exchange"]
                 ohlc_daily = self.data_downloader.download_daily_ohlc(exchange, asset["Asset"])
                 ohlc_weekly = self.__resample_to_weekly_ohlc(ohlc_daily)
                 last_price = self.__parse_last_price(ohlc_daily)
