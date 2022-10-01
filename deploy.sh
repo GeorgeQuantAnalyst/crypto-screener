@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Constants
 VERSION=$1
