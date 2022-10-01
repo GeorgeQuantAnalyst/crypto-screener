@@ -43,7 +43,7 @@ class RatingService:
 
     @staticmethod
     def calculate_volatility_rating(asset):
-        volatility = asset["ATR%_W"]
+        volatility = asset["ATR%_14W"]
 
         if volatility is None:
             return None

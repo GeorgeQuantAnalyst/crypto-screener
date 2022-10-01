@@ -1,5 +1,5 @@
 # Crypto screener
-Application for calculating the ratings based on the indicators (SMA 20, SMA 50, SMA 200), oscillators (RSI) and volatility (ATRW%) for cryptocurrencies exchanges.
+Application for calculating the ratings based on the indicators (SMA 20, SMA 50, SMA 200), oscillators (RSI) and volatility (ATRW%) for cryptocurrencies on different exchanges.
 
 * Supported exchanges:
     * Phemex futures
@@ -34,3 +34,5 @@ Application for calculating the ratings based on the indicators (SMA 20, SMA 50,
 * Pandas-ta
 * CCXT
 * YFinance
+
+[Release notes](RELEASE_NOTES.md)

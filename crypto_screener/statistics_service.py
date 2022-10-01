@@ -50,4 +50,4 @@ class StatisticService:
             ohlc_btc_prepared = ohlc_btc_prepared.drop(ohlc_btc_prepared.tail(1).index)  # drop last n rows
 
         correlation = ohlc.tail(length)["close"].corr(ohlc_btc_prepared.tail(length)["close"])
-        return correlation
+        return round(correlation, 2)
