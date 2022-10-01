@@ -15,6 +15,7 @@ class CryptoScreenerService:
         result = pd.DataFrame()
 
         logging.info("Start download and calculate values")
+        btc_ohlc_daily = self.data_downloader.download_daily_ohlc("BinanceSpot", "BTCUSDT")
 
         count_assets = assets.shape[0]
         for index, asset in assets.iterrows():
@@ -30,9 +31,10 @@ class CryptoScreenerService:
                 asset["SMA_20"] = StatisticService.calculate_actual_sma(ohlc_daily, 20)
                 asset["SMA_50"] = StatisticService.calculate_actual_sma(ohlc_daily, 50)
                 asset["SMA_200"] = StatisticService.calculate_actual_sma(ohlc_daily, 200)
-                asset["ATR%_W"] = StatisticService.calculate_actual_atr_percentage(ohlc_weekly,
-                                                                                   ohlc_weekly.shape[0] - 1,
-                                                                                   last_price)
+                asset["ATR%_14W"] = StatisticService.calculate_actual_atr_percentage(ohlc_weekly,
+                                                                                     14,
+                                                                                     last_price)
+                asset["BTC corr"] = StatisticService.calculate_correlation(ohlc_daily, btc_ohlc_daily, 14)
 
                 asset["MovingAveragesRating"] = RatingService.calculate_moving_averages_rating(asset)
                 asset["OscillatorsRating"] = RatingService.calculate_oscillators_rating(asset)
