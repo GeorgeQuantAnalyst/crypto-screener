@@ -41,3 +41,13 @@ class StatisticService:
         if math.isnan(actual_atr):
             return None
         return round(actual_atr / last_price, 6)
+
+    @staticmethod
+    def calculate_correlation(ohlc: pd.DataFrame, ohlc_btc: pd.DataFrame, length: int):
+        ohlc_btc_prepared = ohlc_btc.copy()
+
+        if ohlc_btc_prepared.tail(1).index != ohlc.tail(1).index:
+            ohlc_btc_prepared = ohlc_btc_prepared.drop(ohlc_btc_prepared.tail(1).index)  # drop last n rows
+
+        correlation = ohlc.tail(length)["close"].corr(ohlc_btc_prepared.tail(length)["close"])
+        return correlation
