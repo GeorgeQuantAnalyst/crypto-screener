@@ -4,11 +4,13 @@ import pandas as pd
 class ImbalanceService:
 
     @staticmethod
-    def find_first_buyer_imbalance(ohlc: pd.DataFrame):
+    def find_buyer_imbalances(ohlc: pd.DataFrame):
         ohlc_copy = ohlc.copy()
+        ohlc_copy["date"] = ohlc_copy.index
+        ohlc_copy.index = (range(ohlc_copy.shape[0]))
 
         # Mark green candles
-        ohlc_copy["green"] = ohlc_copy["open"].lt(ohlc["close"])
+        ohlc_copy["green"] = ohlc_copy["open"].lt(ohlc_copy["close"])
 
         # Decide 3 days consecutive green candles
         ohlc_copy['next_3days_green'] = ohlc_copy[::-1].rolling(3)['green'].sum().eq(3)
@@ -16,13 +18,13 @@ class ImbalanceService:
         # Find buyer imbalances
         buyer_imbalances = ImbalanceService.__find_buyer_imbalances(ohlc_copy)
 
-        first_buyer_imbalance = buyer_imbalances.loc[not buyer_imbalances["is_tested"]].head(1)
-
-        return first_buyer_imbalance
+        return buyer_imbalances
 
     @staticmethod
-    def find_first_selling_imbalance(ohlc):
+    def find_selling_imbalances(ohlc):
         ohlc_copy = ohlc.copy()
+        ohlc_copy["date"] = ohlc_copy.index
+        ohlc_copy.index = (range(ohlc_copy.shape[0]))
 
         # Mark red candles
         ohlc_copy["red"] = ohlc_copy["open"].gt(ohlc_copy["close"])
@@ -33,9 +35,7 @@ class ImbalanceService:
         # Find seller imbalances
         seller_imbalances = ImbalanceService.__find_seller_imbalances(ohlc_copy)
 
-        first_seller_imbalance = seller_imbalances.loc[not seller_imbalances["is_tested"]].head(1)
-
-        return first_seller_imbalance
+        return seller_imbalances
 
     @staticmethod
     def __find_buyer_imbalances(ohlc_copy):
@@ -47,12 +47,12 @@ class ImbalanceService:
         for index, row in ohlc_copy.iterrows():
             if row["next_3days_green"] == True and is_previous_candle_3days_green == False:
                 start_imbalance = previous_open_price
-                is_tested_imbalance = start_imbalance > ohlc_copy[index + 3:]["low"].min()
+                is_tested_imbalance = start_imbalance > ohlc_copy[index + 4:]["low"].min()
 
                 imbalance_row = pd.DataFrame({
-                    "imbalance_date": [row["date"]],
-                    "imbalace_price": [start_imbalance],
-                    "is_tested": [is_tested_imbalance]
+                    "date": [row["date"]],
+                    "price": [start_imbalance],
+                    "tested": [is_tested_imbalance]
                 })
                 buyer_imbalances = pd.concat([buyer_imbalances, imbalance_row], ignore_index=True)
 
@@ -71,12 +71,12 @@ class ImbalanceService:
         for index, row in ohlc_copy.iterrows():
             if row["next_3days_red"] == True and is_previous_candle_3days_red == False:
                 start_imbalance = previous_open_price
-                is_tested_imbalance = start_imbalance < ohlc_copy[index + 3:]["high"].max()
+                is_tested_imbalance = start_imbalance < ohlc_copy[index + 4:]["high"].max()
 
                 imbalance_row = pd.DataFrame({
-                    "imbalance_date": [row["date"]],
-                    "imbalace_price": [start_imbalance],
-                    "is_tested": [is_tested_imbalance]
+                    "date": [row["date"]],
+                    "price": [start_imbalance],
+                    "tested": [is_tested_imbalance]
                 })
                 seller_imbalances = pd.concat([seller_imbalances, imbalance_row], ignore_index=True)
 

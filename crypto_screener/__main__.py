@@ -28,5 +28,6 @@ if __name__ == "__main__":
         result.to_csv(config["Steps"]["BaseScreeningStep"]["outputPath"], index=False)
 
     if config["Steps"]["ImbalanceScreeningStep"]["enable"]:
-        result = imbalance_screening_step.process(assets)
-        result.to_csv(config["Steps"]["ImbalanceScreeningStep"]["outputPath"], index=False)
+        result_buyer_imbalances, result_seller_imbalances = imbalance_screening_step.process(assets)
+        result_buyer_imbalances.to_csv(config["Steps"]["ImbalanceScreeningStep"]["outputBuyerImbalancePath"], index=False)
+        result_seller_imbalances.to_csv(config["Steps"]["ImbalanceScreeningStep"]["outputSellerImbalancePath"], index=False)

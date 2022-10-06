@@ -1,5 +1,5 @@
 Base:
-  assetsPath: "data/assets_test.csv"
+  assetsPath: "data/assets_test2.csv"
 
 Steps:
   BaseScreeningStep:
@@ -8,10 +8,12 @@ Steps:
 
   ImbalanceScreeningStep:
     enable: True
-    dailyOhlcHistory: 90
-    weeklyOhlcHistory: 520
-    monthlyOhlcHistory: 120
-    outputPath: "data/imbalance_screening.csv"
+    4hOhlcHistory: 180 # 30 days
+    dailyOhlcHistory: 90 # 1 quarter
+    weeklyOhlcHistory: 520 # 10 years
+    monthlyOhlcHistory: 120 # 10 years
+    outputBuyerImbalancePath: "data/imbalance_buyer_screening.csv"
+    outputSellerImbalancePath: "data/imbalance_seller_screening.csv"
 
 Services:
   DataDownloader:

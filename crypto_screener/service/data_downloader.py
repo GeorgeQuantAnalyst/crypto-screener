@@ -78,7 +78,7 @@ class DataDownloader:
 
         if time_frame == "1M":
             time_frame_formatted = "1mo"
-            length_formatted = "mo".format(length)
+            length_formatted = "{}mo".format(length)
 
         ohlc_daily_raw = yf.Ticker(ticker).history(length_formatted, time_frame_formatted)
         ohlc_daily_raw.rename(
