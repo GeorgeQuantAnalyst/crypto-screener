@@ -1,1 +1,18 @@
-RateExceedDelaySeconds: 60
+Base:
+  assetsPath: "data/assets_test.csv"
+
+Steps:
+  BaseScreeningStep:
+    enable: False
+    outputPath: "data/base_screening.csv"
+
+  ImbalanceScreeningStep:
+    enable: True
+    dailyOhlcHistory: 90
+    weeklyOhlcHistory: 520
+    monthlyOhlcHistory: 120
+    outputPath: "data/imbalance_screening.csv"
+
+Services:
+  DataDownloader:
+    rateExceedDelaySeconds: 60

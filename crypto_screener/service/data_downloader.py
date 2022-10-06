@@ -2,8 +2,8 @@ import logging
 import time
 
 import ccxt
-import yfinance as yf
 import pandas as pd
+import yfinance as yf
 from ccxt import RateLimitExceeded
 
 
@@ -17,22 +17,28 @@ class DataDownloader:
         self.rate_exceed_delay_seconds = rate_exceed_delay_seconds
 
     def download_daily_ohlc(self, exchange, ticker):
+        return self.download_ohlc(exchange, ticker, "1d", 200)
+
+    def download_ohlc(self, exchange, ticker, time_frame, length):
         logging.debug("Start downloading daily OHLC for {} on exchange {}".format(ticker, exchange))
         if exchange == "PhemexFutures":
             return self.__download_daily_ohlc_from_ccxt(self.phemex_client,
-                                                        ticker.replace("PERP", "").replace("100", "u100"))
+                                                        ticker.replace("PERP", "").replace("100", "u100"),
+                                                        time_frame, length)
 
         if exchange == "KucoinSpot":
-            return self.__download_daily_ohlc_from_ccxt(self.kucoin_client, ticker.replace("USDT", "-USDT"))
+            return self.__download_daily_ohlc_from_ccxt(self.kucoin_client, ticker.replace("USDT", "-USDT"),
+                                                        time_frame, length)
 
         if exchange == "BinanceSpot":
-            return self.__download_daily_ohlc_from_ccxt(self.binance_client, ticker)
+            return self.__download_daily_ohlc_from_ccxt(self.binance_client, ticker, time_frame, length)
 
         if exchange == "OkxSpot":
-            return self.__download_daily_ohlc_from_ccxt(self.okx_client, ticker.replace("USDT", "-USDT"))
+            return self.__download_daily_ohlc_from_ccxt(self.okx_client, ticker.replace("USDT", "-USDT"),
+                                                        time_frame, length)
 
         if exchange == "SimpleFx":
-            return self.__download_daily_ohlc_from_yfinance(ticker)
+            return self.__download_daily_ohlc_from_yfinance(ticker, time_frame, length)
 
         raise Exception("Not supported exchange - {}".format(exchange))
 
@@ -44,10 +50,10 @@ class DataDownloader:
         ohlc_daily.sort_values(["date"], ascending=True, inplace=True)
         return ohlc_daily[["open", "high", "low", "close"]]
 
-    def __download_daily_ohlc_from_ccxt(self, exchange_client, ticker):
+    def __download_daily_ohlc_from_ccxt(self, exchange_client, ticker, time_frame, length):
         while True:
             try:
-                ohlc_daily_raw = exchange_client.fetch_ohlcv(ticker, timeframe="1d", limit=200)
+                ohlc_daily_raw = exchange_client.fetch_ohlcv(ticker, timeframe=time_frame, limit=length)
                 ohlc_daily = pd.DataFrame(ohlc_daily_raw, columns=["date", "open", "high", "low", "close", "volume"])
                 ohlc_daily["date"] = pd.to_datetime(ohlc_daily["date"], unit='ms')
                 ohlc_daily.set_index(["date"], inplace=True)
@@ -59,7 +65,22 @@ class DataDownloader:
                     .format(self.rate_exceed_delay_seconds))
                 time.sleep(self.rate_exceed_delay_seconds)
 
-    def __download_daily_ohlc_from_yfinance(self, ticker):
-        ohlc_daily_raw = yf.Ticker(ticker).history("200d","1d")
-        ohlc_daily_raw.rename(columns={"Open":"open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"}, inplace=True)
-        return ohlc_daily_raw[["open","high","low","close","volume"]]
+    def __download_daily_ohlc_from_yfinance(self, ticker, time_frame, length):
+        time_frame_formatted = time_frame
+        length_formatted = "{}d".format(length)
+        if time_frame == "1d":
+            time_frame_formatted = "1d"
+            length_formatted = "{}d".format(length)
+
+        if time_frame == "1w":
+            time_frame_formatted = "1wk"
+            length_formatted = "{}wk".format(length)
+
+        if time_frame == "1M":
+            time_frame_formatted = "1mo"
+            length_formatted = "mo".format(length)
+
+        ohlc_daily_raw = yf.Ticker(ticker).history(length_formatted, time_frame_formatted)
+        ohlc_daily_raw.rename(
+            columns={"Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"}, inplace=True)
+        return ohlc_daily_raw[["open", "high", "low", "close", "volume"]]

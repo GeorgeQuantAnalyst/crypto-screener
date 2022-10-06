@@ -2,19 +2,23 @@ import logging
 
 import pandas as pd
 
-from crypto_screener.rating_service import RatingService
-from crypto_screener.statistics_service import StatisticService
+from crypto_screener.constants import SEPARATOR
+from crypto_screener.service.rating_service import RatingService
+from crypto_screener.service.statistics_service import StatisticService
 
 
-class CryptoScreenerService:
+class CryptoBaseScreeningStep:
 
     def __init__(self, data_downloader):
         self.data_downloader = data_downloader
 
-    def download_and_calculate_values(self, assets: pd.DataFrame):
+    def process(self, assets: pd.DataFrame):
         result = pd.DataFrame()
 
-        logging.info("Start download and calculate values")
+        logging.info(SEPARATOR)
+        logging.info("Start crypto base screening step")
+        logging.info(SEPARATOR)
+
         btc_ohlc_daily = self.data_downloader.download_daily_ohlc("BinanceSpot", "BTCUSDT")
 
         count_assets = assets.shape[0]
@@ -45,7 +49,9 @@ class CryptoScreenerService:
                 logging.exception("Problem with compute statistic or rating on coin {}".format(asset["Asset"]))
                 result = pd.concat([result, pd.DataFrame([asset])])
 
-        logging.info("Finished download and calculate values")
+        logging.info(SEPARATOR)
+        logging.info("Finished crypto base screening step")
+        logging.info(SEPARATOR)
 
         return result
 
