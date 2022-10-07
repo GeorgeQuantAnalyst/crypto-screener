@@ -41,6 +41,5 @@ Application for calculating buyers/sellers imbalances and ratings based on the i
 * Pandas
 * Pandas-ta
 * CCXT
-* YFinance
 
 [Release notes](RELEASE_NOTES.md)
