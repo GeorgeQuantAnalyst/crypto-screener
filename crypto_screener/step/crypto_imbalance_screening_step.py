@@ -47,16 +47,17 @@ class CryptoImbalanceScreeningStep:
                 asset["LastDate"] = parse_last_date(ohlc_daily)
 
                 asset_with_buyer_imbalances = asset.copy()
-                self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "4h", ohlc_4h)
                 self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "M", ohlc_monthly)
                 self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "W", ohlc_weekly)
                 self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "D", ohlc_daily)
+                self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "4h", ohlc_4h)
 
                 asset_with_seller_imbalances = asset.copy()
-                self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "4h", ohlc_4h)
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "M", ohlc_monthly)
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "W", ohlc_weekly)
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "D", ohlc_daily)
+                self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "4h", ohlc_4h)
+
 
                 result_buyer_imbalances = pd.concat(
                     [result_buyer_imbalances, pd.DataFrame([asset_with_buyer_imbalances])])
@@ -81,7 +82,7 @@ class CryptoImbalanceScreeningStep:
         if buyer_imbalances.empty:
             asset["IMB_BUY_{} date".format(time_frame)] = ""
             asset["IMB_BUY_{} price".format(time_frame)] = ""
-            asset["IMB_BUY_{} %distance".format(time_frame)] = 1
+            asset["IMB_BUY_{} distance%".format(time_frame)] = 1
             return
 
         first_buyer_untested_imbalance = buyer_imbalances.loc[buyer_imbalances["tested"] == False].tail(1)
@@ -89,13 +90,13 @@ class CryptoImbalanceScreeningStep:
         if first_buyer_untested_imbalance.empty:
             asset["IMB_BUY_{} date".format(time_frame)] = ""
             asset["IMB_BUY_{} price".format(time_frame)] = ""
-            asset["IMB_BUY_{} %distance".format(time_frame)] = 1
+            asset["IMB_BUY_{} distance%".format(time_frame)] = 1
             return
 
         imbalance_price = first_buyer_untested_imbalance["price"].values[0]
         asset["IMB_BUY_{} date".format(time_frame)] = first_buyer_untested_imbalance["date"].values[0]
         asset["IMB_BUY_{} price".format(time_frame)] = imbalance_price
-        asset["IMB_BUY_{} %distance".format(time_frame)] = round(1 - (imbalance_price / last_price), 2)
+        asset["IMB_BUY_{} distance%".format(time_frame)] = round(1 - (imbalance_price / last_price), 2)
 
     def append_first_seller_untested_imbalance(self, asset, last_price, time_frame, ohlc):
         seller_imbalances = self.imbalance_service.find_selling_imbalances(ohlc)
@@ -103,7 +104,7 @@ class CryptoImbalanceScreeningStep:
         if seller_imbalances.empty:
             asset["IMB_SELL_{} date".format(time_frame)] = ""
             asset["IMB_SELL_{} price".format(time_frame)] = ""
-            asset["IMB_SELL_{} %distance".format(time_frame)] = 1
+            asset["IMB_SELL_{} distance%".format(time_frame)] = 1
             return
 
         first_seller_untested_imbalance = seller_imbalances.loc[seller_imbalances["tested"] == False].tail(1)
@@ -111,10 +112,10 @@ class CryptoImbalanceScreeningStep:
         if first_seller_untested_imbalance.empty:
             asset["IMB_SELL_{} date".format(time_frame)] = ""
             asset["IMB_SELL_{} price".format(time_frame)] = ""
-            asset["IMB_SELL_{} %distance".format(time_frame)] = 1
+            asset["IMB_SELL_{} distance%".format(time_frame)] = 1
             return
 
         imbalance_price = first_seller_untested_imbalance["price"].values[0]
         asset["IMB_SELL_{} date".format(time_frame)] = first_seller_untested_imbalance["date"].values[0]
         asset["IMB_SELL_{} price".format(time_frame)] = imbalance_price
-        asset["IMB_SELL_{} %distance".format(time_frame)] = round(1 - (imbalance_price / last_price), 2) * -1
+        asset["IMB_SELL_{} distance%".format(time_frame)] = round(1 - (imbalance_price / last_price), 2) * -1
