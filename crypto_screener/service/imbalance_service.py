@@ -2,6 +2,7 @@ import pandas as pd
 
 
 class ImbalanceService:
+    COUNT_SKIP_CANDLES = 4
 
     @staticmethod
     def find_buyer_imbalances(ohlc: pd.DataFrame):
@@ -47,7 +48,8 @@ class ImbalanceService:
         for index, row in ohlc_copy.iterrows():
             if row["next_3days_green"] == True and is_previous_candle_3days_green == False:
                 start_imbalance = previous_open_price
-                is_tested_imbalance = start_imbalance > ohlc_copy[index + 4:]["low"].min()
+                is_tested_imbalance = start_imbalance > ohlc_copy[index + ImbalanceService.COUNT_SKIP_CANDLES:][
+                    "low"].min()
 
                 imbalance_row = pd.DataFrame({
                     "date": [row["date"]],
@@ -71,7 +73,8 @@ class ImbalanceService:
         for index, row in ohlc_copy.iterrows():
             if row["next_3days_red"] == True and is_previous_candle_3days_red == False:
                 start_imbalance = previous_open_price
-                is_tested_imbalance = start_imbalance < ohlc_copy[index + 4:]["high"].max()
+                is_tested_imbalance = start_imbalance < ohlc_copy[index + ImbalanceService.COUNT_SKIP_CANDLES:][
+                    "high"].max()
 
                 imbalance_row = pd.DataFrame({
                     "date": [row["date"]],

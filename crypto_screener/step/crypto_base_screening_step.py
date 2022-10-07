@@ -5,6 +5,7 @@ import pandas as pd
 from crypto_screener.constants import SEPARATOR
 from crypto_screener.service.rating_service import RatingService
 from crypto_screener.service.statistics_service import StatisticService
+from crypto_screener.utils import parse_last_date, parse_last_price, resample_to_weekly_ohlc
 
 
 class CryptoBaseScreeningStep:
@@ -31,10 +32,11 @@ class CryptoBaseScreeningStep:
                 exchange = asset["Exchange"]
                 ohlc_daily = self.data_downloader.download_ohlc(exchange, asset["Asset"], self.TIME_FRAME_DAILY,
                                                                 self.LENGTH_DEFAULT)
-                ohlc_weekly = self.__resample_to_weekly_ohlc(ohlc_daily)
-                last_price = self.__parse_last_price(ohlc_daily)
+                ohlc_weekly = resample_to_weekly_ohlc(ohlc_daily)
+                last_price = parse_last_price(ohlc_daily)
 
                 asset["LastPrice"] = last_price
+                asset["LastDate"] = parse_last_date(ohlc_daily)
                 asset["RSI_14"] = StatisticService.calculate_actual_rsi(ohlc_daily, 14)
                 asset["SMA_20"] = StatisticService.calculate_actual_sma(ohlc_daily, 20)
                 asset["SMA_50"] = StatisticService.calculate_actual_sma(ohlc_daily, 50)
@@ -47,10 +49,10 @@ class CryptoBaseScreeningStep:
                 asset["MovingAveragesRating"] = RatingService.calculate_moving_averages_rating(asset)
                 asset["OscillatorsRating"] = RatingService.calculate_oscillators_rating(asset)
                 asset["VolatilityRating"] = RatingService.calculate_volatility_rating(asset)
-                asset["LastDate"] = self.__parse_last_date(ohlc_daily)
+
                 result = pd.concat([result, pd.DataFrame([asset])])
             except:
-                logging.exception("Problem with compute statistic or rating on coin {}".format(asset["Asset"]))
+                logging.exception("Problem with base screening on coin {}".format(asset["Asset"]))
                 result = pd.concat([result, pd.DataFrame([asset])])
 
         logging.info(SEPARATOR)
@@ -59,17 +61,3 @@ class CryptoBaseScreeningStep:
 
         return result
 
-    @staticmethod
-    def __parse_last_price(ohlc_daily):
-        return ohlc_daily.tail(1)["close"].values[0]
-
-    @staticmethod
-    def __parse_last_date(ohlc_daily):
-        return ohlc_daily.tail(1).index.date[0].strftime("%d.%m.%Y")
-
-    @staticmethod
-    def __resample_to_weekly_ohlc(ohlc_daily):
-        return ohlc_daily.resample("W").aggregate({'open': 'first',
-                                                   'high': 'max',
-                                                   'low': 'min',
-                                                   'close': 'last'})

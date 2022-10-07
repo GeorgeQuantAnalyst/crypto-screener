@@ -16,6 +16,7 @@ if __name__ == "__main__":
     data_downloader = DataDownloader(config["Services"]["DataDownloader"]["rateExceedDelaySeconds"])
     base_screening_step = CryptoBaseScreeningStep(data_downloader)
     imbalance_screening_step = CryptoImbalanceScreeningStep(
+        config["Steps"]["ImbalanceScreeningStep"]["4hOhlcHistory"],
         config["Steps"]["ImbalanceScreeningStep"]["dailyOhlcHistory"],
         config["Steps"]["ImbalanceScreeningStep"]["weeklyOhlcHistory"],
         config["Steps"]["ImbalanceScreeningStep"]["monthlyOhlcHistory"],
@@ -29,5 +30,7 @@ if __name__ == "__main__":
 
     if config["Steps"]["ImbalanceScreeningStep"]["enable"]:
         result_buyer_imbalances, result_seller_imbalances = imbalance_screening_step.process(assets)
-        result_buyer_imbalances.to_csv(config["Steps"]["ImbalanceScreeningStep"]["outputBuyerImbalancePath"], index=False)
-        result_seller_imbalances.to_csv(config["Steps"]["ImbalanceScreeningStep"]["outputSellerImbalancePath"], index=False)
+        result_buyer_imbalances.to_csv(config["Steps"]["ImbalanceScreeningStep"]["outputBuyerImbalancePath"],
+                                       index=False)
+        result_seller_imbalances.to_csv(config["Steps"]["ImbalanceScreeningStep"]["outputSellerImbalancePath"],
+                                        index=False)

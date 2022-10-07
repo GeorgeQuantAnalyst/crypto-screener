@@ -13,3 +13,18 @@ def load_config(file_path):
     except yaml.YAMLError:
         logging.exception("Problem with parsing configuration, the application will be terminated.")
         exit(1)
+
+
+def parse_last_price(ohlc):
+    return ohlc.tail(1)["close"].values[0]
+
+
+def parse_last_date(ohlc):
+    return ohlc.tail(1).index.date[0].strftime("%d.%m.%Y")
+
+
+def resample_to_weekly_ohlc(ohlc_daily):
+    return ohlc_daily.resample("W").aggregate({'open': 'first',
+                                               'high': 'max',
+                                               'low': 'min',
+                                               'close': 'last'})
