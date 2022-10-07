@@ -4,7 +4,6 @@ Application for calculating the ratings based on the indicators (SMA 20, SMA 50,
 * Supported exchanges:
     * Phemex futures
     * Okx spot
-    * SimpleFx cfd
 
 ![Example](images/example.png)
 

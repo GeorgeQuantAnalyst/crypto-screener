@@ -1,9 +1,9 @@
 Base:
-  assetsPath: "data/assets_test2.csv"
+  assetsPath: "data/assets_test.csv"
 
 Steps:
   BaseScreeningStep:
-    enable: False
+    enable: True
     outputPath: "data/base_screening.csv"
 
   ImbalanceScreeningStep:

@@ -8,6 +8,8 @@ from crypto_screener.service.statistics_service import StatisticService
 
 
 class CryptoBaseScreeningStep:
+    TIME_FRAME_DAILY = "1d"
+    LENGTH_DEFAULT = 200
 
     def __init__(self, data_downloader):
         self.data_downloader = data_downloader
@@ -19,14 +21,16 @@ class CryptoBaseScreeningStep:
         logging.info("Start crypto base screening step")
         logging.info(SEPARATOR)
 
-        btc_ohlc_daily = self.data_downloader.download_daily_ohlc("BinanceSpot", "BTCUSDT")
+        btc_ohlc_daily = self.data_downloader.download_ohlc("BinanceSpot", "BTCUSDT", self.TIME_FRAME_DAILY,
+                                                            self.LENGTH_DEFAULT)
 
         count_assets = assets.shape[0]
         for index, asset in assets.iterrows():
             logging.info("Process asset - {} ({}/{})".format(asset["Asset"], index + 1, count_assets))
             try:
                 exchange = asset["Exchange"]
-                ohlc_daily = self.data_downloader.download_daily_ohlc(exchange, asset["Asset"])
+                ohlc_daily = self.data_downloader.download_ohlc(exchange, asset["Asset"], self.TIME_FRAME_DAILY,
+                                                                self.LENGTH_DEFAULT)
                 ohlc_weekly = self.__resample_to_weekly_ohlc(ohlc_daily)
                 last_price = self.__parse_last_price(ohlc_daily)
 

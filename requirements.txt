@@ -4,4 +4,3 @@ pandas-ta==0.3.14b
 openpyxl==3.0.9
 pyyaml==6.0
 ccxt==1.91.92
-yfinance==0.1.74
