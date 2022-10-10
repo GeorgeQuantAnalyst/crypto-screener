@@ -6,6 +6,7 @@ from crypto_screener.constants import LOGGER_CONFIG_FILE_PATH, CONFIG_FILE_PATH,
 from crypto_screener.service.data_downloader import DataDownloader
 from crypto_screener.step.crypto_base_screening_step import CryptoBaseScreeningStep
 from crypto_screener.step.crypto_imbalance_screening_step import CryptoImbalanceScreeningStep
+from crypto_screener.step.update_database_step import UpdateDatabaseStep
 from crypto_screener.utils import load_config
 
 logging.config.fileConfig(fname=LOGGER_CONFIG_FILE_PATH, disable_existing_loggers=False)
@@ -21,6 +22,7 @@ if __name__ == "__main__":
         config["Steps"]["ImbalanceScreeningStep"]["weeklyOhlcHistory"],
         config["Steps"]["ImbalanceScreeningStep"]["monthlyOhlcHistory"],
         data_downloader)
+    update_database_step = UpdateDatabaseStep(config)
 
     assets = pd.read_csv(config["Base"]["assetsPath"])
 
@@ -34,3 +36,6 @@ if __name__ == "__main__":
                                        index=False)
         result_seller_imbalances.to_csv(config["Steps"]["ImbalanceScreeningStep"]["outputSellerImbalancePath"],
                                         index=False)
+
+    if config["Steps"]["UpdateDatabaseStep"]["enable"]:
+        update_database_step.process()
