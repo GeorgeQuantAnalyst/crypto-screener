@@ -2,10 +2,10 @@ class RatingService:
 
     @staticmethod
     def calculate_moving_averages_rating(asset):
-        last_price = asset["LastPrice"]
-        sma_20 = asset["SMA_20"]
-        sma_50 = asset["SMA_50"]
-        sma_200 = asset["SMA_200"]
+        last_price = asset["last_price"]
+        sma_20 = asset["sma_20"]
+        sma_50 = asset["sma_50"]
+        sma_200 = asset["sma_200"]
 
         # [Python - List Comprehension](https://www.w3schools.com/python/python_lists_comprehension.asp)
         count_up = len([x for x in [sma_20, sma_50, sma_200] if x is not None and x < last_price])
@@ -27,7 +27,7 @@ class RatingService:
 
     @staticmethod
     def calculate_oscillators_rating(asset):
-        rsi = asset["RSI_14"]
+        rsi = asset["rsi_14"]
 
         if rsi is None:
             return None
@@ -43,7 +43,7 @@ class RatingService:
 
     @staticmethod
     def calculate_volatility_rating(asset):
-        volatility = asset["ATR%_14W"]
+        volatility = asset["atr%_14W"]
 
         if volatility is None:
             return None

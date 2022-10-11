@@ -1,10 +1,9 @@
 # Crypto screener
-Application for calculating the ratings based on the indicators (SMA 20, SMA 50, SMA 200), oscillators (RSI) and volatility (ATRW%) for cryptocurrencies on different exchanges.
+Application for calculating buyers/sellers imbalances and ratings based on the indicators (SMA 20, SMA 50, SMA 200), oscillators (RSI) and volatility (ATRW%) for cryptocurrencies on different exchanges.
 
 * Supported exchanges:
     * Phemex futures
     * Okx spot
-    * SimpleFx cfd
 
 ![Example](images/example.png)
 
@@ -14,8 +13,8 @@ Application for calculating the ratings based on the indicators (SMA 20, SMA 50,
 * **SMA (Simple Moving Average)**: A simple moving average (SMA) is a calculation that takes the arithmetic mean of a given set of prices over a specific number of days in the past.
 * **ATR (Average True Range**: A technical analysis indicator that measures market volatility by decomposing the entire range of an asset price for that period.
 * **Correlation**: A statistic that measures the degree to which two securities move in relation to each other.
-
-
+* **Buyer imbalance**: Place where is overbalance of buyers over sellers (3 and more consecutive green candles)
+* **Seller imbalance**: Place where is overbalance of sellers over buyers (3 and more consecutive red candles)
 
 ## How to build
 ```bash
@@ -42,6 +41,5 @@ Application for calculating the ratings based on the indicators (SMA 20, SMA 50,
 * Pandas
 * Pandas-ta
 * CCXT
-* YFinance
 
 [Release notes](RELEASE_NOTES.md)

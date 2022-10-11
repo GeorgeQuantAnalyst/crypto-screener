@@ -1,1 +1,23 @@
-RateExceedDelaySeconds: 60
+base:
+  assetsPath: "data/assets.csv"
+  cryptoHistoryDbPath: "../../database/crypto_history.sqlite"
+  cryptoScreenerDbPath: "../../database/crypto_screener.sqlite"
+  initTraderDataTable: False
+
+steps:
+  dataDownloadStep:
+    enable: True
+    fourHoursOhlcHistory: 180 # 30 days
+    dailyOhlcHistory: 201 # about 1/2 year
+    weeklyOhlcHistory: 520 # 10 years
+    monthlyOhlcHistory: 120 # 10 years
+
+  baseScreeningStep:
+    enable: True
+
+  imbalanceScreeningStep:
+    enable: True
+
+services:
+  dataDownloader:
+    rateExceedDelaySeconds: 60

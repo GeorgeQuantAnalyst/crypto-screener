@@ -1,34 +1,47 @@
-import logging
 import logging.config
+import sqlite3
 
 import pandas as pd
 
-from crypto_screener import __version__
-from crypto_screener.crypto_screener_service import CryptoScreenerService
-
-# Constants
-__logo__ = """
----------------------------------------------------------------------
-crypto-screener {}
----------------------------------------------------------------------
-""".format(__version__.__version__)
-
-from crypto_screener.data_downloader import DataDownloader
-
+from crypto_screener.constants import LOGGER_CONFIG_FILE_PATH, CONFIG_FILE_PATH, __logo__
+from crypto_screener.step.crypto_base_screening_step import CryptoBaseScreeningStep
+from crypto_screener.step.crypto_imbalance_screening_step import CryptoImbalanceScreeningStep
+from crypto_screener.step.data_download_step import DataDownloadStep
 from crypto_screener.utils import load_config
-
-CONFIG_FILE_PATH = "config.yaml"
-LOGGER_CONFIG_FILE_PATH = "logger.conf"
-CSV_FILE_PATH = "data/CryptoScreener.csv"
 
 logging.config.fileConfig(fname=LOGGER_CONFIG_FILE_PATH, disable_existing_loggers=False)
 logging.info(__logo__)
 config = load_config(CONFIG_FILE_PATH)
 
 if __name__ == "__main__":
-    data_downloader = DataDownloader(config["RateExceedDelaySeconds"])
-    crypto_screener_service = CryptoScreenerService(data_downloader)
+    try:
+        crypto_history_db_conn = sqlite3.connect(config["base"]["cryptoHistoryDbPath"])
+        crypto_screener_db_conn = sqlite3.connect(config["base"]["cryptoScreenerDbPath"])
 
-    assets = pd.read_csv(CSV_FILE_PATH)
-    assets_with_values = crypto_screener_service.download_and_calculate_values(assets)
-    assets_with_values.to_csv(CSV_FILE_PATH, index=False)
+        data_download_step = DataDownloadStep(config, crypto_history_db_conn)
+        base_screening_step = CryptoBaseScreeningStep(crypto_history_db_conn, crypto_screener_db_conn)
+        imbalance_screening_step = CryptoImbalanceScreeningStep(crypto_history_db_conn, crypto_screener_db_conn)
+
+        assets = pd.read_csv(config["base"]["assetsPath"])
+
+        if config["base"]["initTraderDataTable"]:
+            logging.info("Init table trader_data")
+            trader_data = assets.copy()
+            trader_data["analysed_swing"] = False
+            trader_data["analysed_position"] = False
+            trader_data["selected"] = False
+            trader_data.to_sql(name="trader_data", con=crypto_screener_db_conn, index=False, if_exists="replace")
+
+        if config["steps"]["dataDownloadStep"]["enable"]:
+            data_download_step.process(assets)
+
+        if config["steps"]["baseScreeningStep"]["enable"]:
+            base_screening_step.process(assets)
+
+        if config["steps"]["imbalanceScreeningStep"]["enable"]:
+            imbalance_screening_step.process(assets)
+
+        crypto_history_db_conn.close()
+        crypto_screener_db_conn.close()
+    except:
+        logging.exception("Problem in application crypto-screener")
