@@ -1,24 +1,22 @@
-Base:
-  assetsPath: "data/assets_test.csv"
+base:
+  assetsPath: "data/assets.csv"
+  cryptoHistoryDbPath: "data/crypto_history.sqlite"
+  cryptoScreenerDbPath: "data/crypto_screener.sqlite"
 
-Steps:
-  BaseScreeningStep:
-    enable: True
-    outputPath: "data/base_screening.csv"
-
-  ImbalanceScreeningStep:
-    enable: True
-    4hOhlcHistory: 180 # 30 days
-    dailyOhlcHistory: 90 # 1 quarter
+steps:
+  dataDownloadStep:
+    enable: False
+    fourHoursOhlcHistory: 180 # 30 days
+    dailyOhlcHistory: 201 # about 1/2 year
     weeklyOhlcHistory: 520 # 10 years
     monthlyOhlcHistory: 120 # 10 years
-    outputBuyerImbalancePath: "data/imbalance_buyer_screening.csv"
-    outputSellerImbalancePath: "data/imbalance_seller_screening.csv"
 
-  UpdateDatabaseStep:
+  baseScreeningStep:
     enable: True
-    databaseFilePath: "data/crypto_screener.sqlite"
 
-Services:
-  DataDownloader:
+  imbalanceScreeningStep:
+    enable: True
+
+services:
+  dataDownloader:
     rateExceedDelaySeconds: 60

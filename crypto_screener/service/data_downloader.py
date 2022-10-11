@@ -18,7 +18,13 @@ class DataDownloader:
     def download_ohlc(self, exchange, ticker, time_frame="1d", length=200):
         logging.debug("Start downloading {} OHLC for {} on exchange {}".format(time_frame, ticker, exchange))
         if exchange == "PhemexFutures":
-            return self.__download_ohlc(self.phemex_client,
+            try:
+                # Performance up
+                return self.__download_ohlc(self.okx_client,
+                                            ticker.replace("PERP", "").replace("100", "u100"),
+                                            time_frame, length)
+            except:
+                return self.__download_ohlc(self.phemex_client,
                                         ticker.replace("PERP", "").replace("100", "u100"),
                                         time_frame, length)
 

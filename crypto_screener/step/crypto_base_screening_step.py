@@ -3,17 +3,17 @@ import logging
 import pandas as pd
 
 from crypto_screener.constants import SEPARATOR
+from crypto_screener.queries import SELECT_OHLC_ROWS
 from crypto_screener.service.rating_service import RatingService
 from crypto_screener.service.statistics_service import StatisticService
-from crypto_screener.utils import parse_last_date, parse_last_price, resample_to_weekly_ohlc
+from crypto_screener.utils import parse_last_date, parse_last_price
 
 
 class CryptoBaseScreeningStep:
-    TIME_FRAME_DAILY = "1d"
-    LENGTH_DEFAULT = 200
 
-    def __init__(self, data_downloader):
-        self.data_downloader = data_downloader
+    def __init__(self, crypto_history_db_conn, crypto_screener_db_conn):
+        self.crypto_history_db_conn = crypto_history_db_conn
+        self.crypto_screener_db_conn = crypto_screener_db_conn
 
     def process(self, assets: pd.DataFrame):
         result = pd.DataFrame()
@@ -22,17 +22,21 @@ class CryptoBaseScreeningStep:
         logging.info("Start crypto base screening step")
         logging.info(SEPARATOR)
 
-        btc_ohlc_daily = self.data_downloader.download_ohlc("BinanceSpot", "BTCUSDT", self.TIME_FRAME_DAILY,
-                                                            self.LENGTH_DEFAULT)
+        btc_ohlc_daily = pd.read_sql_query(SELECT_OHLC_ROWS.format("BTCUSDT", "OkxSpot", "D"),
+                                           con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
 
         count_assets = assets.shape[0]
         for index, asset in assets.iterrows():
-            logging.info("Process asset - {} ({}/{})".format(asset["ticker"], index + 1, count_assets))
             try:
+                ticker = asset["ticker"]
                 exchange = asset["exchange"]
-                ohlc_daily = self.data_downloader.download_ohlc(exchange, asset["ticker"], self.TIME_FRAME_DAILY,
-                                                                self.LENGTH_DEFAULT)
-                ohlc_weekly = resample_to_weekly_ohlc(ohlc_daily)
+                logging.info("Process asset - {} ({}/{})".format(asset["ticker"], index + 1, count_assets))
+
+                ohlc_daily = pd.read_sql_query(SELECT_OHLC_ROWS.format(ticker, exchange, "D"),
+                                               con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
+                ohlc_weekly = pd.read_sql_query(SELECT_OHLC_ROWS.format(ticker, exchange, "W"),
+                                                con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
+
                 last_price = parse_last_price(ohlc_daily)
 
                 asset["last_price"] = last_price
@@ -49,17 +53,14 @@ class CryptoBaseScreeningStep:
                 asset["moving_averages_rating"] = RatingService.calculate_moving_averages_rating(asset)
                 asset["oscillators_rating"] = RatingService.calculate_oscillators_rating(asset)
                 asset["volatility_rating"] = RatingService.calculate_volatility_rating(asset)
-                asset["swing_analysed"] = False
-                asset["position_analysed"] = False
-                asset["selected"] = False
 
                 result = pd.concat([result, pd.DataFrame([asset])])
             except:
                 logging.exception("Problem with base screening on coin {}".format(asset["ticker"]))
-                result = pd.concat([result, pd.DataFrame([asset])])
+
+        result.to_sql(name="base_screening", con=self.crypto_screener_db_conn, if_exists="replace")
+        self.crypto_screener_db_conn.commit()
 
         logging.info(SEPARATOR)
         logging.info("Finished crypto base screening step")
         logging.info(SEPARATOR)
-
-        return result
