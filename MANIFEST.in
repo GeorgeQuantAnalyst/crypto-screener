@@ -9,3 +9,4 @@ include data/example.png
 include run.sh
 include prepare.sh
 include deploy.sh
+include build.sh
