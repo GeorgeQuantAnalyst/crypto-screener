@@ -19,14 +19,15 @@ class DataDownloader:
         logging.debug("Start downloading {} OHLC for {} on exchange {}".format(time_frame, ticker, exchange))
         if exchange == "PhemexFutures":
             try:
-                # Performance up
-                return self.__download_ohlc(self.okx_client,
-                                            ticker.replace("PERP", "").replace("100", "u100"),
+                # Faster download from other exchange if pair exist
+                return self.__download_ohlc(self.binance_client,
+                                            ticker.replace("USDPERP", "USDT").replace("1", "").replace("0", ""),
                                             time_frame, length)
             except:
+                logging.warning("Using slow download for {} on exchange - {}".format(ticker, exchange))
                 return self.__download_ohlc(self.phemex_client,
-                                        ticker.replace("PERP", "").replace("100", "u100"),
-                                        time_frame, length)
+                                            ticker.replace("PERP", "").replace("100", "u100"),
+                                            time_frame, length)
 
         if exchange == "KucoinSpot":
             return self.__download_ohlc(self.kucoin_client, ticker.replace("USDT", "-USDT"),
