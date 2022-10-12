@@ -2,7 +2,6 @@ base:
   assetsPath: "data/assets.csv"
   cryptoHistoryDbPath: "../../database/crypto_history.sqlite"
   cryptoScreenerDbPath: "../../database/crypto_screener.sqlite"
-  initTraderDataTable: False
 
 steps:
   dataDownloadStep:

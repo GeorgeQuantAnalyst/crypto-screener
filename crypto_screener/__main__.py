@@ -24,14 +24,6 @@ if __name__ == "__main__":
 
         assets = pd.read_csv(config["base"]["assetsPath"])
 
-        if config["base"]["initTraderDataTable"]:
-            logging.info("Init table trader_data")
-            trader_data = assets.copy()
-            trader_data["analysed_swing"] = False
-            trader_data["analysed_position"] = False
-            trader_data["selected"] = False
-            trader_data.to_sql(name="trader_data", con=crypto_screener_db_conn, index=False, if_exists="replace")
-
         if config["steps"]["dataDownloadStep"]["enable"]:
             data_download_step.process(assets)
 
