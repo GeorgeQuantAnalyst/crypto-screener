@@ -6,6 +6,8 @@ include data/assets.csv
 include data/assets_test.csv
 include data/example.png
 
+include sql/*
+
 include run.sh
 include prepare.sh
 include deploy.sh
