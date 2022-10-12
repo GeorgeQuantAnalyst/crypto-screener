@@ -25,7 +25,7 @@ class DataDownloader:
                                                 ticker.replace("USDPERP", "USDT").replace("1", "").replace("0", ""),
                                                 time_frame, length)
                 except:
-                    logging.warning("Using slow download for {} on exchange - {}".format(ticker, exchange))
+                    logging.info("Using slow download for {} on exchange - {}".format(ticker, exchange))
                     return self.__download_ohlc(self.phemex_client,
                                                 ticker.replace("PERP", "").replace("100", "u100"),
                                                 time_frame, length)
