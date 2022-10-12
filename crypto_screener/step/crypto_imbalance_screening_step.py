@@ -64,8 +64,10 @@ class CryptoImbalanceScreeningStep:
             except:
                 logging.exception("Problem with compute imbalance on coin {}".format(asset["ticker"]))
 
-        result_buyer_imbalances.to_sql(name="buyer_imbalances", con=self.crypto_screener_db_conn, if_exists="replace")
-        result_seller_imbalances.to_sql(name="seller_imbalances", con=self.crypto_screener_db_conn, if_exists="replace")
+        result_buyer_imbalances.to_sql(name="buyer_imbalances", con=self.crypto_screener_db_conn, if_exists="replace",
+                                       index=False)
+        result_seller_imbalances.to_sql(name="seller_imbalances", con=self.crypto_screener_db_conn, if_exists="replace",
+                                        index=False)
         self.crypto_screener_db_conn.commit()
 
         logging.info(SEPARATOR)

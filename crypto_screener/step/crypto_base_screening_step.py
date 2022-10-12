@@ -58,7 +58,7 @@ class CryptoBaseScreeningStep:
             except:
                 logging.exception("Problem with base screening on coin {}".format(asset["ticker"]))
 
-        result.to_sql(name="base_screening", con=self.crypto_screener_db_conn, if_exists="replace")
+        result.to_sql(name="base_screening", con=self.crypto_screener_db_conn, if_exists="replace", index=False)
         self.crypto_screener_db_conn.commit()
 
         logging.info(SEPARATOR)
