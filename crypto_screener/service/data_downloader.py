@@ -17,30 +17,29 @@ class DataDownloader:
 
     def download_ohlc(self, exchange, ticker, time_frame="1d", length=200):
         logging.debug("Start downloading {} OHLC for {} on exchange {}".format(time_frame, ticker, exchange))
-        if exchange == "PhemexFutures":
-            try:
-                # Faster download from other exchange if pair exist
-                return self.__download_ohlc(self.binance_client,
-                                            ticker.replace("USDPERP", "USDT").replace("1", "").replace("0", ""),
+        match exchange:
+            case "PhemexFutures":
+                try:
+                    # Faster download from other exchange if pair exist
+                    return self.__download_ohlc(self.binance_client,
+                                                ticker.replace("USDPERP", "USDT").replace("1", "").replace("0", ""),
+                                                time_frame, length)
+                except:
+                    logging.warning("Using slow download for {} on exchange - {}".format(ticker, exchange))
+                    return self.__download_ohlc(self.phemex_client,
+                                                ticker.replace("PERP", "").replace("100", "u100"),
+                                                time_frame, length)
+            case "KucoinSpot":
+                return self.__download_ohlc(self.kucoin_client, ticker.replace("USDT", "-USDT"),
                                             time_frame, length)
-            except:
-                logging.warning("Using slow download for {} on exchange - {}".format(ticker, exchange))
-                return self.__download_ohlc(self.phemex_client,
-                                            ticker.replace("PERP", "").replace("100", "u100"),
+            case "BinanceSpot":
+                return self.__download_ohlc(self.binance_client, ticker, time_frame, length)
+
+            case "OkxSpot":
+                return self.__download_ohlc(self.okx_client, ticker.replace("USDT", "-USDT"),
                                             time_frame, length)
-
-        if exchange == "KucoinSpot":
-            return self.__download_ohlc(self.kucoin_client, ticker.replace("USDT", "-USDT"),
-                                        time_frame, length)
-
-        if exchange == "BinanceSpot":
-            return self.__download_ohlc(self.binance_client, ticker, time_frame, length)
-
-        if exchange == "OkxSpot":
-            return self.__download_ohlc(self.okx_client, ticker.replace("USDT", "-USDT"),
-                                        time_frame, length)
-
-        raise Exception("Not supported exchange - {}".format(exchange))
+            case _:
+                raise Exception("Not supported exchange - {}".format(exchange))
 
     def __download_ohlc(self, exchange_client, ticker, time_frame, length):
         while True:
