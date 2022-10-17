@@ -1,4 +1,5 @@
 import logging
+from datetime import date, datetime, timedelta
 
 import yaml
 
@@ -28,3 +29,8 @@ def resample_to_weekly_ohlc(ohlc_daily):
                                                'high': 'max',
                                                'low': 'min',
                                                'close': 'last'})
+
+
+def is_actual_data(ohlc_daily):
+    last_date = parse_last_date(ohlc_daily)
+    return datetime.strptime(last_date, "%d.%m.%Y").date() >= (date.today() - timedelta(days=1))
