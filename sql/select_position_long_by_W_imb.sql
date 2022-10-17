@@ -13,13 +13,14 @@ FROM
   buyer_imbalances bi
 WHERE
   bs.ticker = bi.ticker
-  and bs.exchange = bi.exchange
+  AND bs.exchange = bi.exchange
   AND bs.exchange = 'OkxSpot'
   AND bs.last_price > 0.01
   AND bs.moving_averages_rating IN (
     'STRONG_DOWN_TREND', 'DOWN_TREND'
   )
-  and bi."imb_buy_W_distance%" > 0
-  and bi."imb_buy_W_distance%" < 0.5
-order BY
+  AND bi."imb_buy_W_distance%" < 0.5
+  AND bi.imb_buy_W_date < DATE('now', '-35 day')
+    -- AND bs.ticker NOT IN (SELECT position_long_analysed  FROM trader_data td WHERE position_long_analysed  != "")
+ORDER BY
   bi."imb_buy_W_distance%"

@@ -18,5 +18,6 @@ WHERE
   AND bs.oscillators_rating in ('BEARISH', 'OVERSOLD')
   AND bi."imb_buy_D_distance%" < 0.2
   AND bi.imb_buy_D_date < DATE('now', '-5 day')
+    -- AND bs.ticker NOT IN (SELECT swing_long_analysed  FROM trader_data td WHERE swing_long_analysed  != "")
 ORDER BY
   bi."imb_buy_D_distance%" ASC
