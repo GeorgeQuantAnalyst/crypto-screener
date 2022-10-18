@@ -1,3 +1,4 @@
+-- TODO 8: LUCKA load oscillators_rating_D instead oscillators_rating
 SELECT
   bs.ticker,
   bs.exchange,

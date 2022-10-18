@@ -26,9 +26,7 @@ class RatingService:
         return None
 
     @staticmethod
-    def calculate_oscillators_rating(asset):
-        rsi = asset["rsi_14"]
-
+    def calculate_oscillators_rating(rsi):
         if rsi is None:
             return None
 
@@ -42,9 +40,7 @@ class RatingService:
             return "OVERSOLD"
 
     @staticmethod
-    def calculate_volatility_rating(asset):
-        volatility = asset["atr%_14W"]
-
+    def calculate_volatility_rating(volatility):
         if volatility is None:
             return None
 
