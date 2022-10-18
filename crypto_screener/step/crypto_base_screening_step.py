@@ -32,6 +32,8 @@ class CryptoBaseScreeningStep:
                 exchange = asset["exchange"]
                 logging.info("Process asset - {} ({}/{})".format(asset["ticker"], index + 1, count_assets))
 
+                ohlc_4h = pd.read_sql_query(SELECT_OHLC_ROWS.format(ticker, exchange, "4h"),
+                                            con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
                 ohlc_daily = pd.read_sql_query(SELECT_OHLC_ROWS.format(ticker, exchange, "D"),
                                                con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
                 ohlc_weekly = pd.read_sql_query(SELECT_OHLC_ROWS.format(ticker, exchange, "W"),
@@ -41,7 +43,8 @@ class CryptoBaseScreeningStep:
 
                 asset["last_price"] = last_price
                 asset["last_date"] = parse_last_date(ohlc_daily)
-                asset["rsi_14"] = StatisticService.calculate_actual_rsi(ohlc_daily, 14)
+                asset["rsi_14_4h"] = StatisticService.calculate_actual_rsi(ohlc_4h, 14)
+                asset["rsi_14_D"] = StatisticService.calculate_actual_rsi(ohlc_daily, 14)
                 asset["sma_20"] = StatisticService.calculate_actual_sma(ohlc_daily, 20)
                 asset["sma_50"] = StatisticService.calculate_actual_sma(ohlc_daily, 50)
                 asset["sma_200"] = StatisticService.calculate_actual_sma(ohlc_daily, 200)
@@ -51,8 +54,9 @@ class CryptoBaseScreeningStep:
                 asset["btc_corr"] = StatisticService.calculate_correlation(ohlc_daily, btc_ohlc_daily, 14)
 
                 asset["moving_averages_rating"] = RatingService.calculate_moving_averages_rating(asset)
-                asset["oscillators_rating"] = RatingService.calculate_oscillators_rating(asset)
-                asset["volatility_rating"] = RatingService.calculate_volatility_rating(asset)
+                asset["oscillators_rating_4h"] = RatingService.calculate_oscillators_rating(asset["rsi_14_4h"])
+                asset["oscillators_rating_D"] = RatingService.calculate_oscillators_rating(asset["rsi_14_D"])
+                asset["volatility_rating"] = RatingService.calculate_volatility_rating(asset["atr%_14W"])
 
                 result = pd.concat([result, pd.DataFrame([asset])])
             except:
