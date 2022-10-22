@@ -11,7 +11,7 @@ class DataDownloadStep:
 
     def __init__(self, config, crypto_history_db_conn):
         self.crypto_history_db_conn = crypto_history_db_conn
-        self.data_downloader = DataDownloader(config["services"]["dataDownloader"]["rateExceedDelaySeconds"])
+        self.data_downloader = DataDownloader(config)
 
         self.four_hours_ohlc_history = config["steps"]["dataDownloadStep"]["fourHoursOhlcHistory"]
         self.daily_ohlc_history = config["steps"]["dataDownloadStep"]["dailyOhlcHistory"]

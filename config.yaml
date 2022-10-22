@@ -20,3 +20,5 @@ steps:
 services:
   dataDownloader:
     rateExceedDelaySeconds: 60
+    binanceNotSupportedPairs:
+      - HNTUSDT

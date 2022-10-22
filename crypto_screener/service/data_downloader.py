@@ -8,12 +8,13 @@ from ccxt import RateLimitExceeded
 
 class DataDownloader:
 
-    def __init__(self, rate_exceed_delay_seconds):
+    def __init__(self, config):
         self.phemex_client = ccxt.phemex()
         self.kucoin_client = ccxt.kucoin()
         self.binance_client = ccxt.binance()
         self.okx_client = ccxt.okx()
-        self.rate_exceed_delay_seconds = rate_exceed_delay_seconds
+        self.rate_exceed_delay_seconds = config["services"]["dataDownloader"]["rateExceedDelaySeconds"]
+        self.binance_not_supported_pairs = config["services"]["dataDownloader"]["binanceNotSupportedPairs"]
 
     def download_ohlc(self, exchange, ticker, time_frame="1d", length=200):
         logging.debug("Start downloading {} OHLC for {} on exchange {}".format(time_frame, ticker, exchange))
@@ -21,9 +22,10 @@ class DataDownloader:
             case "PhemexFutures":
                 try:
                     # Faster download from other exchange if pair exist
-                    return self.__download_ohlc(self.binance_client,
-                                                ticker.replace("USDPERP", "USDT").replace("1", "").replace("0", ""),
-                                                time_frame, length)
+                    ticker_prepared = ticker.replace("USDPERP", "USDT").replace("1", "").replace("0", "")
+                    if ticker_prepared in self.binance_not_supported_pairs:
+                        raise Exception("Binance not supported pair - {}".format(ticker_prepared))
+                    return self.__download_ohlc(self.binance_client, ticker_prepared, time_frame, length)
                 except:
                     logging.info("Using slow download for {} on exchange - {}".format(ticker, exchange))
                     return self.__download_ohlc(self.phemex_client,
