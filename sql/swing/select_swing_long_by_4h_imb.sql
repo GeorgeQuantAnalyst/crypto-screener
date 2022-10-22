@@ -17,7 +17,7 @@ WHERE
   AND bs.volatility_rating in ('MEDIUM', 'HIGH')
   AND bs.oscillators_rating_4h in ('BEARISH', 'OVERSOLD')
   AND bi."imb_buy_4h_distance%" < 0.2
-  AND bi.imb_buy_4h_date < DATE('now', '-3 day')
+  AND bi.imb_buy_4h_date < DATE('now', '-1 day')
   -- AND bs.ticker NOT IN (SELECT swing_long_analysed  FROM trader_data td WHERE swing_long_analysed  != "")
 ORDER BY
   bi."imb_buy_4h_distance%" ASC

@@ -17,7 +17,7 @@ WHERE
   AND bs.volatility_rating in ('MEDIUM', 'HIGH')
   AND bs.oscillators_rating_4h in ('BULLISH', 'OVERBOUGHT')
   AND si."imb_sell_4h_distance%" < 0.2
-  AND si.imb_sell_4h_date < DATE('now', '-5 day')
+  AND si.imb_sell_4h_date < DATE('now', '-1 day')
     -- AND bs.ticker NOT IN (SELECT swing_short_analysed  FROM trader_data td WHERE swing_short_analysed  != "")
 ORDER BY
   si."imb_sell_4h_distance%" ASC
