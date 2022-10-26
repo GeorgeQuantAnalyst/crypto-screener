@@ -18,6 +18,15 @@ WHERE
   AND bs.oscillators_rating_4h in ('BULLISH', 'OVERBOUGHT')
   AND si."imb_sell_4h_distance%" < 0.2
   AND si.imb_sell_4h_date < DATE('now', '-1 day')
-    -- AND bs.ticker NOT IN (SELECT swing_short_analysed  FROM trader_data td WHERE swing_short_analysed  != "")
+  AND bs.ticker NOT IN (
+    SELECT
+      ticker
+    FROM
+      seller_imbalances_processed sip
+    WHERE
+      sip.ticker = si.ticker
+      AND sip.imb_price = si.imb_sell_4h_price
+      AND sip.imb_date = si.imb_sell_4h_date
+  )
 ORDER BY
   si."imb_sell_4h_distance%" ASC
