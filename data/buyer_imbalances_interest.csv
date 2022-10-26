@@ -1,0 +1,4 @@
+ticker,exchange,imb_date,imb_price,time_frame,trading_strategy,detail,trader,date
+GLMRUSDPERP,PhemexFutures,2022-10-15 00:00:00,0.4387,D,Bounce from rotation,https://www.tradingview.com/x/abip32W2/,Jirka,2022-10-25
+SNXUSDPERP,PhemexFutures,2022-10-16 00:00:00,2.071,D,Bounce from rotation,https://www.tradingview.com/x/5AXXwo69/,Jirka,2022-10-25
+YFIUSDPERP,PhemexFutures,2022-07-26 00:00:00,6980.49,D,Bounce from rotation,https://www.tradingview.com/x/L9XXrZtB/,Jirka,2022-10-25

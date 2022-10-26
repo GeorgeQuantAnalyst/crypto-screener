@@ -5,17 +5,24 @@ base:
 
 steps:
   dataDownloadStep:
-    enable: True
+    enable: False
     fourHoursOhlcHistory: 180 # 30 days
     dailyOhlcHistory: 201 # about 1/2 year
     weeklyOhlcHistory: 520 # 10 years
     monthlyOhlcHistory: 120 # 10 years
 
   baseScreeningStep:
-    enable: True
+    enable: False
 
   imbalanceScreeningStep:
+    enable: False
+
+  loadProcessedImbalancesStep:
     enable: True
+    buyerImbalancesProcessedPath: "data/buyer_imbalances_processed.csv"
+    sellerImbalancesProcessedPath: "data/seller_imbalances_processed.csv"
+    buyerImbalancesInterestPath: "data/buyer_imbalances_processed.csv"
+    sellerImbalancesInterestPath: "data/seller_imbalances_processed.csv"
 
 services:
   dataDownloader:
