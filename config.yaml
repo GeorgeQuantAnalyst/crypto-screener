@@ -17,6 +17,11 @@ steps:
   imbalanceScreeningStep:
     enable: True
 
+  loadProcessedImbalancesStep:
+    enable: True
+    buyerImbalancesPath: "data/buyer_imbalances_processed.csv"
+    sellerImbalancesPath: "data/seller_imbalances_processed.csv"
+
 services:
   dataDownloader:
     rateExceedDelaySeconds: 60

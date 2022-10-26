@@ -1,0 +1,30 @@
+import logging
+
+import pandas as pd
+
+from crypto_screener.constants import SEPARATOR
+
+
+class LoadProcessedImbalancesStep:
+
+    def __init__(self, config, crypto_screener_db_conn):
+        self.buyer_imbalances_processed_path = config["steps"]["loadProcessedImbalancesStep"]["buyerImbalancesPath"]
+        self.seller_imbalances_processed_path = config["steps"]["loadProcessedImbalancesStep"]["sellerImbalancesPath"]
+        self.crypto_screener_db_conn = crypto_screener_db_conn
+
+    def process(self):
+        logging.info(SEPARATOR)
+        logging.info("Start load processed imbalances to database step")
+        logging.info(SEPARATOR)
+
+        buyer_imbalances_processed = pd.read_csv(self.buyer_imbalances_processed_path)
+        seller_imbalances_processed = pd.read_csv(self.seller_imbalances_processed_path)
+
+        buyer_imbalances_processed.to_sql(name="buyer_imbalances_processed", con=self.crypto_screener_db_conn,
+                                          if_exists="replace")
+        seller_imbalances_processed.to_sql(name="seller_imbalances_processed", con=self.crypto_screener_db_conn,
+                                           if_exists="replace")
+
+        logging.info(SEPARATOR)
+        logging.info("Finished load processed imbalances to database step")
+        logging.info(SEPARATOR)
