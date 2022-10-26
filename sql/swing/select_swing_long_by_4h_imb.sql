@@ -18,6 +18,15 @@ WHERE
   AND bs.oscillators_rating_4h in ('BEARISH', 'OVERSOLD')
   AND bi."imb_buy_4h_distance%" < 0.2
   AND bi.imb_buy_4h_date < DATE('now', '-1 day')
-  -- AND bs.ticker NOT IN (SELECT swing_long_analysed  FROM trader_data td WHERE swing_long_analysed  != "")
+  AND bs.ticker NOT IN (
+    SELECT
+      ticker
+    FROM
+      buyer_imbalances_processed bip
+    WHERE
+      bip.ticker = bi.ticker
+      AND bip.imb_price = bi.imb_buy_4h_price
+      AND bip.imb_date = bi.imb_buy_4h_date
+  )
 ORDER BY
   bi."imb_buy_4h_distance%" ASC
