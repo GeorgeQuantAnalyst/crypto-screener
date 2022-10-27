@@ -2,11 +2,9 @@ include requirements.txt
 include config.yaml
 include logger.conf
 
-include data/assets.csv
-include data/assets_test.csv
-include data/example.png
-
+include data/*
 include sql/*
+include images/*
 
 include run.sh
 include prepare.sh
