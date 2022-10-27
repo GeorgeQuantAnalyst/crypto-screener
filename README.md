@@ -1,5 +1,5 @@
 # Crypto screener
-Application for calculating buyers/sellers imbalances and ratings based on the indicators (SMA 20, SMA 50, SMA 200), oscillators (RSI) and volatility (ATRW%) for cryptocurrencies on different exchanges.
+Application for find buyers/sellers imbalances and calculate ratings based on the indicators (SMA 20, SMA 50, SMA 200), oscillators (RSI) and volatility (ATRW%) for cryptocurrencies on different exchanges.
 
 * Supported exchanges:
     * Phemex futures

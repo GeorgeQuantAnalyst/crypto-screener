@@ -1,11 +1,38 @@
 # Release notes
 
+## Version 1.1.0
+Available since: 27.10.2022
+
+```
+New feature
+```
+* [08da768](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/08da768bde2c184d73223fc52ee8bda1f31f61fd) - Create Imbalance screener
+* [8a98dee](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/8a98deea700b2057a20bd8d3c80e973e80adbf57) -  Create data downloader step and connect other steps to load data from database
+* [14652a2](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/14652a227a1b1a0bcf26a70b35d0c5ad2eb3fbb3) - Created sql select for find daily buyer and seller imbalances
+* [3793cd3](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/3793cd37707cb086f0eabf952f6d8eee0c479736) - Filtered processed imbalances in db select
+* [266acc1](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/266acc188e5768bb086ef262dc0240b1804a5872) - Created LoadProcessedImbalancesStep
+
+```
+Improvement
+```
+* [bf24f0d](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/bf24f0de091337250f094786daad8f86e56d568e) - Refactoring code for add new steps
+* [a438010](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/a43801067cbf3ee467ffde48155a44e8b02ea286) - Unification of column names in dataseries (database)
+* [67b435a](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/67b435a10b43ed04f8419bb3b2a7e438d85f57bf) - Faster download for PhemexFutures
+* [58e6db4](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/58e6db41cccfcec6d4f8518ce77bf43b0622ddd8) - Clean code - converted if elif to match case
+* [cf34a8a](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/cf34a8ac7b713ba3da6d2b0ecd1758e2a07c3e32) - added warning message if download not actual ohlc from exchange
+
+```
+Bug
+```
+* [8758850](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/8758850e277beff9252e336f26d77ff27b39f5de) - Removed support for SimpleFx (us equities) 
+
+
 ## Version 1.0.0
+Available since: 1.10.2022
 
-* Available since: 1.10.2022
-
-### New futures
-
+```
+New feature
+```
 * [653fb](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/653fb04224c40670a01fa527c94b3b76379179eb) -
   Implemented app logic for Phemex futures screening
 * [ee391](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/ee39115dbd56e83d75590511cad60a7deb5f81d3) - Added
@@ -14,9 +41,8 @@
   support for Okx exchange and SimpleFx screening
 * [1cdb0](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/1cdb054194ea63831abff1d0bf5209d32f1bdfc4) - Implemented correlation with BTC
 
-### Improvements
-
+```
+Improvement
+```
 * [5b5f5](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/5b5f5cd424f48e5c4660263c02d29561d9c544ce) - Added
   stop on first error in bash scripts
-
-### Bugs
