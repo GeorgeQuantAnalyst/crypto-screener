@@ -22,15 +22,13 @@ class DataDownloader:
             case "PhemexFutures":
                 try:
                     # Faster download from other exchange if pair exist
-                    ticker_prepared = ticker.replace("USDPERP", "USDT").replace("1", "").replace("0", "")
+                    ticker_prepared = ticker.replace("USD", "USDT").replace("u1", "").replace("0", "")
                     if ticker_prepared in self.binance_not_supported_pairs:
                         raise Exception("Binance not supported pair - {}".format(ticker_prepared))
                     return self.__download_ohlc(self.binance_client, ticker_prepared, time_frame, length)
                 except:
                     logging.info("Using slow download for {} on exchange - {}".format(ticker, exchange))
-                    return self.__download_ohlc(self.phemex_client,
-                                                ticker.replace("PERP", "").replace("100", "u100"),
-                                                time_frame, length)
+                    return self.__download_ohlc(self.phemex_client, ticker, time_frame, length)
             case "KucoinSpot":
                 return self.__download_ohlc(self.kucoin_client, ticker.replace("USDT", "-USDT"),
                                             time_frame, length)

@@ -22,7 +22,7 @@ class CryptoBaseScreeningStep:
         logging.info("Start crypto base screening step")
         logging.info(SEPARATOR)
 
-        btc_ohlc_daily = pd.read_sql_query(SELECT_OHLC_ROWS.format("BTCUSDT", "OkxSpot", "D"),
+        btc_ohlc_daily = pd.read_sql_query(SELECT_OHLC_ROWS.format("BTCUSDT", "BinanceSpot", "D"),
                                            con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
 
         count_assets = assets.shape[0]
