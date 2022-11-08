@@ -1,6 +1,6 @@
-SELECT COUNT(*)
-FROM
-(
+DROP VIEW IF EXISTS v_uptrend_markets;
+
+CREATE VIEW v_uptrend_markets AS
 SELECT
   ticker,
   last_price,
@@ -13,7 +13,5 @@ FROM
 WHERE
   moving_averages_rating IN ('STRONG_UP_TREND', 'UP_TREND')
   AND last_price > 0.01
-  AND exchange = 'OkxSpot'
 order BY
-  moving_averages_rating
- )
+  moving_averages_rating;
