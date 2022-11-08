@@ -3,6 +3,7 @@ include config.yaml
 include logger.conf
 
 include data/*
+include data/db_view/*
 include images/*
 
 include run.sh
