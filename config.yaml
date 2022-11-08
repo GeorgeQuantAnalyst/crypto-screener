@@ -24,6 +24,10 @@ steps:
     buyerImbalancesInterestPath: "data/buyer_imbalances_processed.csv"
     sellerImbalancesInterestPath: "data/seller_imbalances_processed.csv"
 
+  createViewsStep:
+    enable: True
+    viewFolder: "data/db_view"
+
 services:
   dataDownloader:
     rateExceedDelaySeconds: 60
