@@ -44,12 +44,12 @@ class DataDownloader:
     def __download_ohlc(self, exchange_client, ticker, time_frame, length):
         while True:
             try:
-                ohlc_daily_raw = exchange_client.fetch_ohlcv(ticker, timeframe=time_frame, limit=length)
-                ohlc_daily = pd.DataFrame(ohlc_daily_raw, columns=["date", "open", "high", "low", "close", "volume"])
-                ohlc_daily["date"] = pd.to_datetime(ohlc_daily["date"], unit='ms')
-                ohlc_daily.set_index(["date"], inplace=True)
-                ohlc_daily.sort_values(["date"], ascending=True, inplace=True)
-                return ohlc_daily
+                ohlc_raw = exchange_client.fetch_ohlcv(ticker, timeframe=time_frame, limit=length)
+                ohlc = pd.DataFrame(ohlc_raw, columns=["date", "open", "high", "low", "close", "volume"])
+                ohlc["date"] = pd.to_datetime(ohlc["date"], unit='ms')
+                ohlc.set_index(["date"], inplace=True)
+                ohlc.sort_values(["date"], ascending=True, inplace=True)
+                return ohlc
             except RateLimitExceeded:
                 logging.warning(
                     "RateLimitExceeded: Too Many Requests on exchange api, app will be sleep {} seconds before recall api."
