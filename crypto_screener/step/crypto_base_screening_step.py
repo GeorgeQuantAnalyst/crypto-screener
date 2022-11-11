@@ -16,7 +16,7 @@ class CryptoBaseScreeningStep:
         self.crypto_screener_db_conn = crypto_screener_db_conn
 
     def process(self, assets: pd.DataFrame):
-        result = pd.DataFrame()
+        result = []
 
         logging.info(SEPARATOR)
         logging.info("Start crypto base screening step")
@@ -58,11 +58,12 @@ class CryptoBaseScreeningStep:
                 asset["oscillators_rating_D"] = RatingService.calculate_oscillators_rating(asset["rsi_14_D"])
                 asset["volatility_rating"] = RatingService.calculate_volatility_rating(asset["atr%_14W"])
 
-                result = pd.concat([result, pd.DataFrame([asset])])
+                result.append(asset.to_dict())
             except:
                 logging.exception("Problem with base screening on coin {}".format(asset["ticker"]))
 
-        result.to_sql(name="base_screening", con=self.crypto_screener_db_conn, if_exists="replace", index=False)
+        pd.DataFrame(result).to_sql(name="base_screening", con=self.crypto_screener_db_conn, if_exists="replace",
+                                    index=False)
         self.crypto_screener_db_conn.commit()
 
         logging.info(SEPARATOR)

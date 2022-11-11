@@ -43,47 +43,45 @@ class ImbalanceService:
         previous_open_price = 0
         is_previous_candle_3days_green = False
 
-        buyer_imbalances = pd.DataFrame()
+        buyer_imbalances = []
 
         for index, row in ohlc_copy.iterrows():
-            if row["next_3days_green"] == True and is_previous_candle_3days_green == False:
+            if row["next_3days_green"] is True and is_previous_candle_3days_green is False:
                 start_imbalance = previous_open_price
                 is_tested_imbalance = start_imbalance > ohlc_copy[index + ImbalanceService.COUNT_SKIP_CANDLES:][
                     "low"].min()
 
-                imbalance_row = pd.DataFrame({
-                    "date": [row["date"]],
-                    "price": [start_imbalance],
-                    "tested": [is_tested_imbalance]
+                buyer_imbalances.append({
+                    "date": row["date"],
+                    "price": start_imbalance,
+                    "tested": is_tested_imbalance
                 })
-                buyer_imbalances = pd.concat([buyer_imbalances, imbalance_row], ignore_index=True)
 
             previous_open_price = row["open"]
             is_previous_candle_3days_green = row["next_3days_green"]
 
-        return buyer_imbalances
+        return pd.DataFrame(buyer_imbalances)
 
     @staticmethod
     def __find_seller_imbalances(ohlc_copy):
         previous_open_price = 0
         is_previous_candle_3days_red = False
 
-        seller_imbalances = pd.DataFrame()
+        seller_imbalances = []
 
         for index, row in ohlc_copy.iterrows():
-            if row["next_3days_red"] == True and is_previous_candle_3days_red == False:
+            if row["next_3days_red"] is True and is_previous_candle_3days_red is False:
                 start_imbalance = previous_open_price
                 is_tested_imbalance = start_imbalance < ohlc_copy[index + ImbalanceService.COUNT_SKIP_CANDLES:][
                     "high"].max()
 
-                imbalance_row = pd.DataFrame({
-                    "date": [row["date"]],
-                    "price": [start_imbalance],
-                    "tested": [is_tested_imbalance]
+                seller_imbalances.append({
+                    "date": row["date"],
+                    "price": start_imbalance,
+                    "tested": is_tested_imbalance
                 })
-                seller_imbalances = pd.concat([seller_imbalances, imbalance_row], ignore_index=True)
 
             previous_open_price = row["open"]
             is_previous_candle_3days_red = row["next_3days_red"]
 
-        return seller_imbalances
+        return pd.DataFrame(seller_imbalances)

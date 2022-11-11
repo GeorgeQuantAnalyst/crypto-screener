@@ -16,8 +16,8 @@ class CryptoImbalanceScreeningStep:
         self.imbalance_service = ImbalanceService()
 
     def process(self, assets: pd.DataFrame):
-        result_buyer_imbalances = pd.DataFrame()
-        result_seller_imbalances = pd.DataFrame()
+        result_buyer_imbalances = []
+        result_seller_imbalances = []
 
         logging.info(SEPARATOR)
         logging.info("Start crypto imbalance screening step")
@@ -57,16 +57,14 @@ class CryptoImbalanceScreeningStep:
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "D", ohlc_daily)
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "4h", ohlc_4h)
 
-                result_buyer_imbalances = pd.concat(
-                    [result_buyer_imbalances, pd.DataFrame([asset_with_buyer_imbalances])])
-                result_seller_imbalances = pd.concat(
-                    [result_seller_imbalances, pd.DataFrame([asset_with_seller_imbalances])])
+                result_buyer_imbalances.append(asset_with_buyer_imbalances.to_dict())
+                result_seller_imbalances.append(asset_with_seller_imbalances.to_dict())
             except:
                 logging.exception("Problem with compute imbalance on coin {}".format(asset["ticker"]))
 
-        result_buyer_imbalances.to_sql(name="buyer_imbalances", con=self.crypto_screener_db_conn, if_exists="replace",
+        pd.DataFrame(result_buyer_imbalances).to_sql(name="buyer_imbalances", con=self.crypto_screener_db_conn, if_exists="replace",
                                        index=False)
-        result_seller_imbalances.to_sql(name="seller_imbalances", con=self.crypto_screener_db_conn, if_exists="replace",
+        pd.DataFrame(result_seller_imbalances).to_sql(name="seller_imbalances", con=self.crypto_screener_db_conn, if_exists="replace",
                                         index=False)
         self.crypto_screener_db_conn.commit()
 
