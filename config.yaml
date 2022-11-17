@@ -6,6 +6,7 @@ base:
 steps:
   dataDownloadStep:
     enable: True
+    oneHoursOhlcHistory: 240 # 10 days
     fourHoursOhlcHistory: 180 # 30 days
     dailyOhlcHistory: 201 # about 1/2 year
     weeklyOhlcHistory: 520 # 10 years
