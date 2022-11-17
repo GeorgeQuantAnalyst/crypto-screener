@@ -21,8 +21,6 @@ steps:
     enable: True
     buyerImbalancesProcessedPath: "data/buyer_imbalances_processed.csv"
     sellerImbalancesProcessedPath: "data/seller_imbalances_processed.csv"
-    buyerImbalancesInterestPath: "data/buyer_imbalances_processed.csv"
-    sellerImbalancesInterestPath: "data/seller_imbalances_processed.csv"
 
   createViewsStep:
     enable: True
