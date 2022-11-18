@@ -48,6 +48,9 @@ class CryptoBaseScreeningStep:
                 asset["sma_20"] = StatisticService.calculate_actual_sma(ohlc_daily, 20)
                 asset["sma_50"] = StatisticService.calculate_actual_sma(ohlc_daily, 50)
                 asset["sma_200"] = StatisticService.calculate_actual_sma(ohlc_daily, 200)
+                asset["atr%_3D"] = StatisticService.calculate_actual_atr_percentage(ohlc_daily,
+                                                                                     3,
+                                                                                     last_price)
                 asset["atr%_14W"] = StatisticService.calculate_actual_atr_percentage(ohlc_weekly,
                                                                                      14,
                                                                                      last_price)

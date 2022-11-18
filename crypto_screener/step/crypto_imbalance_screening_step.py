@@ -31,6 +31,9 @@ class CryptoImbalanceScreeningStep:
                 exchange = asset["exchange"]
                 logging.info("Process asset - {} ({}/{})".format(ticker, index + 1, count_assets))
 
+                ohlc_1h = pd.read_sql_query(SELECT_OHLC_ROWS.format(ticker, exchange, "1h"),
+                                            con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
+
                 ohlc_4h = pd.read_sql_query(SELECT_OHLC_ROWS.format(ticker, exchange, "4h"),
                                             con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
                 ohlc_daily = pd.read_sql_query(SELECT_OHLC_ROWS.format(ticker, exchange, "D"),
@@ -50,12 +53,14 @@ class CryptoImbalanceScreeningStep:
                 self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "W", ohlc_weekly)
                 self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "D", ohlc_daily)
                 self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "4h", ohlc_4h)
+                self.append_first_buyer_untested_imbalance(asset_with_buyer_imbalances, last_price, "1h", ohlc_1h)
 
                 asset_with_seller_imbalances = asset.copy()
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "M", ohlc_monthly)
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "W", ohlc_weekly)
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "D", ohlc_daily)
                 self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "4h", ohlc_4h)
+                self.append_first_seller_untested_imbalance(asset_with_seller_imbalances, last_price, "1h", ohlc_1h)
 
                 result_buyer_imbalances.append(asset_with_buyer_imbalances.to_dict())
                 result_seller_imbalances.append(asset_with_seller_imbalances.to_dict())
