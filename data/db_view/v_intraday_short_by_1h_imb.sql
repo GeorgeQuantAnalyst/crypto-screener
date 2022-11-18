@@ -18,7 +18,7 @@ WHERE
   AND bs.exchange = si.exchange
   AND bs."atr%_3D" > 0.10
   AND si.imb_sell_1h_date < DATETIME('now', '-5 hour')
-  AND bi."imb_sell_1h_distance%" < 0.1
+  AND si."imb_sell_1h_distance%" < 0.1
   AND bs.ticker NOT IN (
     SELECT
       ticker
@@ -30,4 +30,4 @@ WHERE
       AND sip.imb_date = si.imb_sell_1h_date
   )
 ORDER BY
-  bi."imb_sell_1h_distance%" ASC;
+  si."imb_sell_1h_distance%" ASC;
