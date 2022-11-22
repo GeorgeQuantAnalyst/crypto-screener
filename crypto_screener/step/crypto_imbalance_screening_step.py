@@ -15,7 +15,7 @@ class CryptoImbalanceScreeningStep:
         self.crypto_screener_db_conn = crypto_screener_db_conn
         self.imbalance_service = ImbalanceService()
 
-    def process(self, assets: pd.DataFrame):
+    def process(self, assets: pd.DataFrame) -> None:
         result_buyer_imbalances = []
         result_seller_imbalances = []
 
@@ -67,17 +67,20 @@ class CryptoImbalanceScreeningStep:
             except:
                 logging.exception("Problem with compute imbalance on coin {}".format(asset["ticker"]))
 
-        pd.DataFrame(result_buyer_imbalances).to_sql(name="buyer_imbalances", con=self.crypto_screener_db_conn, if_exists="replace",
-                                       index=False)
-        pd.DataFrame(result_seller_imbalances).to_sql(name="seller_imbalances", con=self.crypto_screener_db_conn, if_exists="replace",
-                                        index=False)
+        pd.DataFrame(result_buyer_imbalances).to_sql(name="buyer_imbalances", con=self.crypto_screener_db_conn,
+                                                     if_exists="replace",
+                                                     index=False)
+        pd.DataFrame(result_seller_imbalances).to_sql(name="seller_imbalances", con=self.crypto_screener_db_conn,
+                                                      if_exists="replace",
+                                                      index=False)
         self.crypto_screener_db_conn.commit()
 
         logging.info(SEPARATOR)
         logging.info("Finished crypto imbalance screening step")
         logging.info(SEPARATOR)
 
-    def append_first_buyer_untested_imbalance(self, asset, last_price, time_frame, ohlc):
+    def append_first_buyer_untested_imbalance(self, asset: pd.Series, last_price: float, time_frame: str,
+                                              ohlc: pd.DataFrame) -> None:
         buyer_imbalances = self.imbalance_service.find_buyer_imbalances(ohlc)
 
         if buyer_imbalances.empty:
@@ -93,7 +96,8 @@ class CryptoImbalanceScreeningStep:
         asset["imb_buy_{}_price".format(time_frame)] = imbalance_price
         asset["imb_buy_{}_distance%".format(time_frame)] = round(1 - (imbalance_price / last_price), 2)
 
-    def append_first_seller_untested_imbalance(self, asset, last_price, time_frame, ohlc):
+    def append_first_seller_untested_imbalance(self, asset: pd.Series, last_price: float, time_frame: str,
+                                               ohlc: pd.DataFrame) -> None:
         seller_imbalances = self.imbalance_service.find_selling_imbalances(ohlc)
 
         if seller_imbalances.empty:

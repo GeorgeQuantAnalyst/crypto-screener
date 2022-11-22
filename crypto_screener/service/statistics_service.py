@@ -7,7 +7,7 @@ import pandas_ta as ta
 class StatisticService:
 
     @staticmethod
-    def calculate_actual_rsi(ohlc: pd.DataFrame, length: int = 14):
+    def calculate_actual_rsi(ohlc: pd.DataFrame, length: int = 14) -> float:
         if length > ohlc.shape[0]:
             return None
 
@@ -19,7 +19,7 @@ class StatisticService:
         return round(actual_rsi, 6)
 
     @staticmethod
-    def calculate_actual_sma(ohlc: pd.DataFrame, length: int = 20):
+    def calculate_actual_sma(ohlc: pd.DataFrame, length: int = 20) -> float:
         if length > ohlc.shape[0]:
             return None
 
@@ -31,7 +31,7 @@ class StatisticService:
         return round(actual_sma, 6)
 
     @staticmethod
-    def calculate_actual_atr_percentage(ohlc: pd.DataFrame, length: int, last_price: int):
+    def calculate_actual_atr_percentage(ohlc: pd.DataFrame, length: int, last_price: int) -> float:
         if length > ohlc.shape[0]:
             return None
 
@@ -43,7 +43,7 @@ class StatisticService:
         return round(actual_atr / last_price, 6)
 
     @staticmethod
-    def calculate_correlation(ohlc: pd.DataFrame, ohlc_btc: pd.DataFrame, length: int):
+    def calculate_correlation(ohlc: pd.DataFrame, ohlc_btc: pd.DataFrame, length: int) -> float:
         ohlc_btc_prepared = ohlc_btc.copy()
 
         if ohlc_btc_prepared.tail(1).index != ohlc.tail(1).index:

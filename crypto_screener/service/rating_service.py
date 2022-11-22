@@ -1,7 +1,10 @@
+import pandas as pd
+
+
 class RatingService:
 
     @staticmethod
-    def calculate_moving_averages_rating(asset):
+    def calculate_moving_averages_rating(asset: pd.Series) -> str:
         last_price = asset["last_price"]
         sma_20 = asset["sma_20"]
         sma_50 = asset["sma_50"]
@@ -26,7 +29,7 @@ class RatingService:
         return None
 
     @staticmethod
-    def calculate_oscillators_rating(rsi):
+    def calculate_oscillators_rating(rsi: str) -> str:
         if rsi is None:
             return None
 
@@ -40,7 +43,7 @@ class RatingService:
             return "OVERSOLD"
 
     @staticmethod
-    def calculate_volatility_rating(volatility):
+    def calculate_volatility_rating(volatility: str) -> str:
         if volatility is None:
             return None
 

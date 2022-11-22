@@ -9,7 +9,7 @@ from crypto_screener.utils import is_actual_data, parse_last_date
 
 class DataDownloadStep:
 
-    def __init__(self, config, crypto_history_db_conn):
+    def __init__(self, config: dict, crypto_history_db_conn):
         self.crypto_history_db_conn = crypto_history_db_conn
         self.data_downloader = DataDownloader(config)
 
@@ -19,7 +19,7 @@ class DataDownloadStep:
         self.weekly_ohlc_history = config["steps"]["dataDownloadStep"]["weeklyOhlcHistory"]
         self.monthly_ohlc_history = config["steps"]["dataDownloadStep"]["monthlyOhlcHistory"]
 
-    def process(self, assets: pd.DataFrame):
+    def process(self, assets: pd.DataFrame) -> None:
         logging.info(SEPARATOR)
         logging.info("Start data download step")
         logging.info(SEPARATOR)

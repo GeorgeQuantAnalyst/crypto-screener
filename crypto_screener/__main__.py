@@ -11,11 +11,11 @@ from crypto_screener.step.data_download_step import DataDownloadStep
 from crypto_screener.step.load_processed_imbalances_step import LoadProcessedImbalancesStep
 from crypto_screener.utils import load_config
 
-logging.config.fileConfig(fname=LOGGER_CONFIG_FILE_PATH, disable_existing_loggers=False)
-logging.info(__logo__)
-config = load_config(CONFIG_FILE_PATH)
-
 if __name__ == "__main__":
+    logging.config.fileConfig(fname=LOGGER_CONFIG_FILE_PATH, disable_existing_loggers=False)
+    logging.info(__logo__)
+    config = load_config(CONFIG_FILE_PATH)
+
     try:
         crypto_history_db_conn = sqlite3.connect(config["base"]["cryptoHistoryDbPath"])
         crypto_screener_db_conn = sqlite3.connect(config["base"]["cryptoScreenerDbPath"])
@@ -46,4 +46,4 @@ if __name__ == "__main__":
         crypto_history_db_conn.close()
         crypto_screener_db_conn.close()
     except:
-        logging.exception("Problem in application crypto-screener")
+        logging.exception("Problem in application crypto-screener:")

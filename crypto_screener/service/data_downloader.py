@@ -3,12 +3,12 @@ import time
 
 import ccxt
 import pandas as pd
-from ccxt import RateLimitExceeded
+from ccxt import RateLimitExceeded, Exchange
 
 
 class DataDownloader:
 
-    def __init__(self, config):
+    def __init__(self, config: dict):
         self.phemex_client = ccxt.phemex()
         self.kucoin_client = ccxt.kucoin()
         self.binance_client = ccxt.binance()
@@ -16,7 +16,7 @@ class DataDownloader:
         self.rate_exceed_delay_seconds = config["services"]["dataDownloader"]["rateExceedDelaySeconds"]
         self.binance_not_supported_pairs = config["services"]["dataDownloader"]["binanceNotSupportedPairs"]
 
-    def download_ohlc(self, exchange, ticker, time_frame="1d", length=200):
+    def download_ohlc(self, exchange: str, ticker: str, time_frame: str = "1d", length: int = 200) -> pd.DataFrame:
         logging.debug("Start downloading {} OHLC for {} on exchange {}".format(time_frame, ticker, exchange))
         match exchange:
             case "PhemexFutures":
@@ -41,7 +41,7 @@ class DataDownloader:
             case _:
                 raise Exception("Not supported exchange - {}".format(exchange))
 
-    def __download_ohlc(self, exchange_client, ticker, time_frame, length):
+    def __download_ohlc(self, exchange_client: Exchange, ticker: str, time_frame: str, length: str) -> pd.DataFrame:
         while True:
             try:
                 ohlc_raw = exchange_client.fetch_ohlcv(ticker, timeframe=time_frame, limit=length)

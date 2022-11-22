@@ -5,8 +5,4 @@ include logger.conf
 include data/*
 include data/db_view/*
 include images/*
-
-include run.sh
-include prepare.sh
-include deploy.sh
-include build.sh
+include *.sh

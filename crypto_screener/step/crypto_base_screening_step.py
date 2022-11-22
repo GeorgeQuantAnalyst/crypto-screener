@@ -15,7 +15,7 @@ class CryptoBaseScreeningStep:
         self.crypto_history_db_conn = crypto_history_db_conn
         self.crypto_screener_db_conn = crypto_screener_db_conn
 
-    def process(self, assets: pd.DataFrame):
+    def process(self, assets: pd.DataFrame) -> None:
         result = []
 
         logging.info(SEPARATOR)
@@ -49,8 +49,8 @@ class CryptoBaseScreeningStep:
                 asset["sma_50"] = StatisticService.calculate_actual_sma(ohlc_daily, 50)
                 asset["sma_200"] = StatisticService.calculate_actual_sma(ohlc_daily, 200)
                 asset["atr%_3D"] = StatisticService.calculate_actual_atr_percentage(ohlc_daily,
-                                                                                     3,
-                                                                                     last_price)
+                                                                                    3,
+                                                                                    last_price)
                 asset["atr%_14W"] = StatisticService.calculate_actual_atr_percentage(ohlc_weekly,
                                                                                      14,
                                                                                      last_price)

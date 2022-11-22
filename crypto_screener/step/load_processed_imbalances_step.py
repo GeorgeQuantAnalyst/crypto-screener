@@ -7,13 +7,13 @@ from crypto_screener.constants import SEPARATOR
 
 class LoadProcessedImbalancesStep:
 
-    def __init__(self, config, crypto_screener_db_conn):
+    def __init__(self, config: dict, crypto_screener_db_conn):
         step_config = config["steps"]["loadProcessedImbalancesStep"]
         self.buyer_imbalances_processed_path = step_config["buyerImbalancesProcessedPath"]
         self.seller_imbalances_processed_path = step_config["sellerImbalancesProcessedPath"]
         self.crypto_screener_db_conn = crypto_screener_db_conn
 
-    def process(self):
+    def process(self) -> None:
         logging.info(SEPARATOR)
         logging.info("Start load processed imbalances to database step")
         logging.info(SEPARATOR)

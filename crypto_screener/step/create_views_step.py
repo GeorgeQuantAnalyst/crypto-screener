@@ -6,11 +6,11 @@ from crypto_screener.constants import SEPARATOR
 
 class CreateViewsStep:
 
-    def __init__(self, config, crypto_screener_db_conn):
+    def __init__(self, config: dict, crypto_screener_db_conn):
         self.crypto_screener_db_con = crypto_screener_db_conn
         self.view_folder = config["steps"]["createViewsStep"]["viewFolder"]
 
-    def process(self):
+    def process(self) -> None:
         logging.info(SEPARATOR)
         logging.info("Start create views step")
         logging.info(SEPARATOR)
@@ -31,7 +31,7 @@ class CreateViewsStep:
         logging.info(SEPARATOR)
 
     @staticmethod
-    def __read_file(path):
+    def __read_file(path: str) -> str:
         file = open(path, mode="r")
         result = file.read()
         file.close()

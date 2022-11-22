@@ -5,7 +5,7 @@ class ImbalanceService:
     COUNT_SKIP_CANDLES = 4
 
     @staticmethod
-    def find_buyer_imbalances(ohlc: pd.DataFrame):
+    def find_buyer_imbalances(ohlc: pd.DataFrame) -> pd.DataFrame:
         ohlc_copy = ohlc.copy()
         ohlc_copy["date"] = ohlc_copy.index
         ohlc_copy.index = (range(ohlc_copy.shape[0]))
@@ -22,7 +22,7 @@ class ImbalanceService:
         return buyer_imbalances
 
     @staticmethod
-    def find_selling_imbalances(ohlc):
+    def find_selling_imbalances(ohlc: pd.DataFrame) -> pd.DataFrame:
         ohlc_copy = ohlc.copy()
         ohlc_copy["date"] = ohlc_copy.index
         ohlc_copy.index = (range(ohlc_copy.shape[0]))
@@ -39,7 +39,7 @@ class ImbalanceService:
         return seller_imbalances
 
     @staticmethod
-    def __find_buyer_imbalances(ohlc_copy):
+    def __find_buyer_imbalances(ohlc_copy: pd.DataFrame) -> pd.DataFrame:
         previous_open_price = 0
         is_previous_candle_3days_green = False
 
@@ -63,7 +63,7 @@ class ImbalanceService:
         return pd.DataFrame(buyer_imbalances)
 
     @staticmethod
-    def __find_seller_imbalances(ohlc_copy):
+    def __find_seller_imbalances(ohlc_copy: pd.DataFrame) -> pd.DataFrame:
         previous_open_price = 0
         is_previous_candle_3days_red = False
 
