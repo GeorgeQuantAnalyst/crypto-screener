@@ -15,14 +15,14 @@ class CryptoBaseScreeningStep:
         self.crypto_history_db_conn = crypto_history_db_conn
         self.crypto_screener_db_conn = crypto_screener_db_conn
 
-    def process(self, assets: pd.DataFrame):
-        result = pd.DataFrame()
+    def process(self, assets: pd.DataFrame) -> None:
+        result = []
 
         logging.info(SEPARATOR)
         logging.info("Start crypto base screening step")
         logging.info(SEPARATOR)
 
-        btc_ohlc_daily = pd.read_sql_query(SELECT_OHLC_ROWS.format("BTCUSDT", "OkxSpot", "D"),
+        btc_ohlc_daily = pd.read_sql_query(SELECT_OHLC_ROWS.format("BTCUSDT", "BinanceSpot", "D"),
                                            con=self.crypto_history_db_conn, index_col="date", parse_dates=["date"])
 
         count_assets = assets.shape[0]
@@ -48,6 +48,9 @@ class CryptoBaseScreeningStep:
                 asset["sma_20"] = StatisticService.calculate_actual_sma(ohlc_daily, 20)
                 asset["sma_50"] = StatisticService.calculate_actual_sma(ohlc_daily, 50)
                 asset["sma_200"] = StatisticService.calculate_actual_sma(ohlc_daily, 200)
+                asset["atr%_3D"] = StatisticService.calculate_actual_atr_percentage(ohlc_daily,
+                                                                                    3,
+                                                                                    last_price)
                 asset["atr%_14W"] = StatisticService.calculate_actual_atr_percentage(ohlc_weekly,
                                                                                      14,
                                                                                      last_price)
@@ -58,11 +61,12 @@ class CryptoBaseScreeningStep:
                 asset["oscillators_rating_D"] = RatingService.calculate_oscillators_rating(asset["rsi_14_D"])
                 asset["volatility_rating"] = RatingService.calculate_volatility_rating(asset["atr%_14W"])
 
-                result = pd.concat([result, pd.DataFrame([asset])])
+                result.append(asset.to_dict())
             except:
                 logging.exception("Problem with base screening on coin {}".format(asset["ticker"]))
 
-        result.to_sql(name="base_screening", con=self.crypto_screener_db_conn, if_exists="replace", index=False)
+        pd.DataFrame(result).to_sql(name="base_screening", con=self.crypto_screener_db_conn, if_exists="replace",
+                                    index=False)
         self.crypto_screener_db_conn.commit()
 
         logging.info(SEPARATOR)

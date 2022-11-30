@@ -1,3 +1,6 @@
+DROP VIEW IF EXISTS v_swing_long_by_4h_imb;
+
+CREATE VIEW v_swing_long_by_4h_imb AS
 SELECT
   bs.ticker,
   bs.exchange,
@@ -29,4 +32,4 @@ WHERE
       AND bip.imb_date = bi.imb_buy_4h_date
   )
 ORDER BY
-  bi."imb_buy_4h_distance%" ASC
+  bi."imb_buy_4h_distance%" ASC;

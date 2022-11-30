@@ -1,3 +1,6 @@
 ticker,exchange
-BTCUSDT,OkxSpot
-ETHUSDT,OkxSpot
+BTCUSDT,BinanceSpot
+ETHUSD,PhemexFutures
+XRPUSD,PhemexFutures
+LINKUSD,PhemexFutures
+LTCUSD,PhemexFutures

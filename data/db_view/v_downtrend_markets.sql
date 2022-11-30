@@ -1,8 +1,7 @@
+DROP VIEW IF EXISTS v_downtrend_markets;
+
+CREATE VIEW v_downtrend_markets AS
 SELECT
-  COUNT(*)
-FROM
-  (
-    SELECT
       ticker,
       last_price,
       sma_20,
@@ -16,7 +15,5 @@ FROM
         'STRONG_DOWN_TREND', 'DOWN_TREND'
       )
       AND last_price > 0.01
-      AND exchange = 'OkxSpot'
     order BY
-      moving_averages_rating DESC
-  )
+      moving_averages_rating DESC;

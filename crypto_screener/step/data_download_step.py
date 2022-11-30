@@ -9,16 +9,17 @@ from crypto_screener.utils import is_actual_data, parse_last_date
 
 class DataDownloadStep:
 
-    def __init__(self, config, crypto_history_db_conn):
+    def __init__(self, config: dict, crypto_history_db_conn):
         self.crypto_history_db_conn = crypto_history_db_conn
         self.data_downloader = DataDownloader(config)
 
+        self.one_hours_ohlc_history = config["steps"]["dataDownloadStep"]["oneHoursOhlcHistory"]
         self.four_hours_ohlc_history = config["steps"]["dataDownloadStep"]["fourHoursOhlcHistory"]
         self.daily_ohlc_history = config["steps"]["dataDownloadStep"]["dailyOhlcHistory"]
         self.weekly_ohlc_history = config["steps"]["dataDownloadStep"]["weeklyOhlcHistory"]
         self.monthly_ohlc_history = config["steps"]["dataDownloadStep"]["monthlyOhlcHistory"]
 
-    def process(self, assets: pd.DataFrame):
+    def process(self, assets: pd.DataFrame) -> None:
         logging.info(SEPARATOR)
         logging.info("Start data download step")
         logging.info(SEPARATOR)
@@ -29,6 +30,9 @@ class DataDownloadStep:
                 ticker = asset["ticker"]
                 exchange = asset["exchange"]
                 logging.info("Process asset - {} ({}/{})".format(ticker, index + 1, count_assets))
+
+                ohlc_1h = self.data_downloader.download_ohlc(exchange, ticker, "1h",
+                                                             self.one_hours_ohlc_history)
 
                 ohlc_4h = self.data_downloader.download_ohlc(exchange, ticker, "4h",
                                                              self.four_hours_ohlc_history)
@@ -42,6 +46,9 @@ class DataDownloadStep:
                 if not is_actual_data(ohlc_daily):
                     msg = "Not download actual OHLC data for ticker {} - {}, last date is: {}. Please contact your data-provider..."
                     logging.warning(msg.format(ticker, exchange, parse_last_date(ohlc_daily)))
+
+                ohlc_1h.to_sql(name="{}_{}_1h".format(ticker, exchange), con=self.crypto_history_db_conn,
+                               if_exists="replace")
 
                 ohlc_4h.to_sql(name="{}_{}_4h".format(ticker, exchange), con=self.crypto_history_db_conn,
                                if_exists="replace")
