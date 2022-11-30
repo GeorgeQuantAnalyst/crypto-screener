@@ -1,5 +1,26 @@
 # Release notes
 
+## Version 1.1.1
+Available since: 30.11.2022
+
+```
+New feature
+```
+* [efae0c0](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/efae0c02e003761095a3cdf4fe8346366a1f1d41) - Implemented support find intraday 1h buyer and seller imbalances
+
+```
+Improvement
+```
+* [fc63c0b](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/fc63c0bc6ec6595c38d47f6bdb6ea39ad2aeb2f5) - Implemented step  CreateViewsStep
+* [d32db6d](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/d32db6d69bdac8971afb538190da0fd2da11748e) - Performance improve app: change save items into list instead concat df
+* [6d821e5](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/6d821e569a5efd2cc83f4e48e62e92ccd5270f52) - Removed save buyer and seller interest imb to db
+
+```
+Bug
+```
+* [ec1c432](https://github.com/GeorgeQuantAnalyst/crypto-screener/commit/ec1c432b019c9a4b4e3c68d4c3b23a9fa2411124) - Phemex futures ticker update and set Binance BTC as reference
+
+
 ## Version 1.1.0
 Available since: 27.10.2022
 
